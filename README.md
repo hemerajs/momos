@@ -50,3 +50,8 @@ Reverse proxy to handle server-side-includes as web components without static co
 ```
 go run examples/example.go
 ```
+
+## TODO
+
+- [ ] Lexer
+- [ ] Parser
