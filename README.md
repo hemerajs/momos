@@ -1,7 +1,7 @@
-# momos
+# Momos
 Reverse proxy to handle server-side-includes as web components without static configurations.
 
-# Proposal
+## Proposal
 ```html
 <!doctype html>
 
@@ -30,7 +30,7 @@ Reverse proxy to handle server-side-includes as web components without static co
 </html>
 ```
 
-# Example
+## Example
 
 ```
 go run examples/example.go
