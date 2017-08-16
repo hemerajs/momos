@@ -1,6 +1,22 @@
 # Momos
 Reverse proxy to handle server-side-includes as web components without static configurations.
 
+```
++-----+    +---------+    +-------+
+|     |    |         |    |       |
+| API +---->  Proxy  +----> NGINX |
+|     |    |         |    |       |
++-----+    +----+----+    +-------+
+                |
+                |
+           +----v----+
+           |         |
+           |   SSI   |
+           |         |
+           +---------+
+
+```
+
 ## Proposal
 ```html
 <!doctype html>
