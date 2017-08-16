@@ -12,7 +12,6 @@ Reverse proxy to handle server-side-includes as web components without static co
 
   <ssi-basket
     cache="5000"
-    etag="true"
     timeout="2000"
     fallback="<url> | <elementId>"
     url="https://domain.de/basket"
