@@ -52,5 +52,6 @@ go run examples/example.go
 ```
 
 ## TODO
-- [ ] Configuration
-- [ ] Get SSI web components from markup and transclude the content
+- [ ] Use the net/http package to fetch the SSI Content
+- [ ] Use the golang.org/x/net/html to parse a web component
+- [ ] Go concurrency with multi-channel communication
