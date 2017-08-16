@@ -52,6 +52,5 @@ go run examples/example.go
 ```
 
 ## TODO
-
-- [ ] Lexer
-- [ ] Parser
+- [ ] Configuration
+- [ ] Get SSI web components from markup and transclude the content
