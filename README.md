@@ -1,3 +1,7 @@
+<p align="center">
+    <a href="http://markojs.com/"><img src="logo.png" alt="Momos logo" /></a><br /><br />
+</p>
+
 # Momos
 Reverse proxy to handle server-side-includes as web components without static configurations.
 
