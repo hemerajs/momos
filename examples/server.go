@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
 
 	"github.com/hemerajs/momos"
 )
 
 func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello, you've hit the server %s\n", r.URL.Path)
+	w.Header().Add("Cache-Control", "max-age=100000")
+	fmt.Fprintf(w, "hello, you've hit the server %s\n %v", r.URL.Path, rand.Int())
 }
 
 func main() {
-
 	// API Mock
 	api := http.NewServeMux()
 	api.HandleFunc("/", hello)

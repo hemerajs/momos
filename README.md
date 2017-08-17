@@ -46,6 +46,8 @@ Reverse proxy to handle server-side-includes as web components without static co
 </html>
 ```
 
+## Install
+
 ## Example
 
 ```
@@ -56,3 +58,4 @@ go run examples/example.go
 - [ ] Use the net/http package to fetch the SSI Content
 - [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [ ] Go concurrency with multi-channel communication
+- [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
