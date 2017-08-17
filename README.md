@@ -1,3 +1,5 @@
+![logo](logo.png)
+
 # Momos
 
 Reverse proxy to handle server-side-includes as web components without static configurations.
@@ -58,3 +60,6 @@ go run examples/example.go
 - [ ] Use the net/http package to fetch the SSI Content
 - [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
+
+### Credit
+Icon made by [author](https://www.flaticon.com/authors/dinosoftlabs) from www.flaticon.com
