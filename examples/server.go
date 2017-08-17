@@ -11,7 +11,7 @@ import (
 func hello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "max-age=100000")
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "<ssi-teaser>hello, you've hit the server %s\n %v </ssi-teaser>", r.URL.Path, rand.Int())
+	fmt.Fprintf(w, "<ssi-teaser>hello, you've hit the server %s <b>%v</b></ssi-teaser>", r.URL.Path, rand.Int())
 }
 
 func main() {

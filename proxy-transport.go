@@ -2,6 +2,7 @@ package momos
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -39,13 +40,15 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		panic(err)
 	}
 
-	element.SetHtml(strings.Replace("schmerver", "server", eHTML, -1))
+	element.SetHtml(strings.Replace(eHTML, "server", "schmerver", -1))
 
 	htmlDoc, err := doc.Html()
 
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("%v", htmlDoc)
 
 	// assign new reader with content
 	content := []byte(htmlDoc)
