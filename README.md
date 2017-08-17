@@ -53,5 +53,5 @@ go run examples/example.go
 
 ## TODO
 - [ ] Use the net/http package to fetch the SSI Content
-- [ ] Use the golang.org/x/net/html to parse a web component
+- [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [ ] Go concurrency with multi-channel communication
