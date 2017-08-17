@@ -1,26 +1,10 @@
-![logo](logo.png)
+<p align="center">
+    <img src="logo.png" alt="Momos logo" /><br /><br />
+</p>
 
-# Momos
+Momos - Reverse proxy to handle server-side-includes as web components without static configurations.
 
-Reverse proxy to handle server-side-includes as web components without static configurations.
-
-```
-+-----+    +---------+    +-------+
-|     |    |         |    |       |
-| API +---->  Proxy  +----> NGINX |
-|     |    |         |    |       |
-+-----+    +----+----+    +-------+
-                |
-                |
-           +----v----+
-           |         |
-           |   SSI   |
-           |         |
-           +---------+
-
-```
-
-## Proposal
+## Example
 ```html
 <!doctype html>
 
@@ -48,12 +32,22 @@ Reverse proxy to handle server-side-includes as web components without static co
 </html>
 ```
 
-## Install
-
-## Example
+## Description
 
 ```
-go run examples/example.go
++-----+    +---------+    +-------+
+|     |    |         |    |       |
+| API +---->  Proxy  +----> NGINX |
+|     |    |         |    |       |
++-----+    +----+----+    +-------+
+                |
+                |
+           +----v----+
+           |         |
+           |   SSI   |
+           |         |
+           +---------+
+
 ```
 
 ## TODO
