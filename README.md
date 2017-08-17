@@ -2,7 +2,7 @@
     <img src="logo.png" alt="Momos logo" /><br /><br />
 </p>
 
-Momos - Reverse proxy to handle server-side-includes as web components without static configurations.
+Momos - Reverse proxy to handle server-side-includes as custom elements without static configuration.
 
 - **Cache:** Requests to your downstream are cached with Rfc7234
 - **Fast:** SSI are loaded in parallel
