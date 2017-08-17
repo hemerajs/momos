@@ -5,6 +5,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
+
+	"github.com/PuerkitoBio/goquery"
 )
 
 type proxyTransport struct {
@@ -20,24 +23,35 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		return nil, err
 	}
 
-	// read response buffer
-	b, err := ioutil.ReadAll(resp.Body)
+	doc, err := goquery.NewDocumentFromReader(resp.Body)
+
 	if err != nil {
 		return nil, err
 	}
 
-	// close reader
-	err = resp.Body.Close()
+	// Just an example
+
+	element := doc.Find("ssi-teaser")
+
+	eHTML, err := element.Html()
+
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	// replace "server" with "schmerver"
-	b = bytes.Replace(b, []byte("server"), []byte("schmerver"), -1)
+	element.SetHtml(strings.Replace("schmerver", "server", eHTML, -1))
+
+	htmlDoc, err := doc.Html()
+
+	if err != nil {
+		panic(err)
+	}
+
 	// assign new reader with content
-	body := ioutil.NopCloser(bytes.NewReader(b))
+	content := []byte(htmlDoc)
+	body := ioutil.NopCloser(bytes.NewReader(content))
 	resp.Body = body
-	resp.ContentLength = int64(len(b)) // update content length
-	resp.Header.Set("Content-Length", strconv.Itoa(len(b)))
+	resp.ContentLength = int64(len(content)) // update content length
+	resp.Header.Set("Content-Length", strconv.Itoa(len(content)))
 	return resp, nil
 }

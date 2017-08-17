@@ -10,7 +10,8 @@ import (
 
 func hello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "max-age=100000")
-	fmt.Fprintf(w, "hello, you've hit the server %s\n %v", r.URL.Path, rand.Int())
+	w.Header().Set("Content-Type", "text/html")
+	fmt.Fprintf(w, "<ssi-teaser>hello, you've hit the server %s\n %v </ssi-teaser>", r.URL.Path, rand.Int())
 }
 
 func main() {
