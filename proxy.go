@@ -14,6 +14,7 @@ type Proxy struct {
 	proxyURL     string
 	Server       *http.Server
 	handler      *httpcache.Handler
+	cache        httpcache.Cache
 }
 
 func New(proxyUrl, targetUrl string) *Proxy {
@@ -30,7 +31,8 @@ func New(proxyUrl, targetUrl string) *Proxy {
 	p.reverseProxy = httputil.NewSingleHostReverseProxy(target)
 	p.reverseProxy.Transport = &proxyTransport{http.DefaultTransport}
 
-	p.handler = httpcache.NewHandler(httpcache.NewMemoryCache(), p.reverseProxy)
+	p.cache = httpcache.NewMemoryCache()
+	p.handler = httpcache.NewHandler(p.cache, p.reverseProxy)
 	p.handler.Shared = true
 
 	respLogger := httplog.NewResponseLogger(p.handler)
