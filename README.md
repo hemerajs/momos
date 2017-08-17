@@ -4,6 +4,13 @@
 
 Momos - Reverse proxy to handle server-side-includes as web components without static configurations.
 
+- **Cache:** Requests to your downstream are cached with Rfc7234
+- **Fast:** SSI are loaded in parallel
+- **No configs**: Everything is configurable via HTML5 attributes
+- **Fallback**: Define default content or an error message in your template
+- **Reliable**: Define timeouts to avoid hanging requests.
+- **Custom elements**: Handle SSI elements as custom elememts `ssi-*`
+
 ## Example
 ```html
 <!doctype html>
