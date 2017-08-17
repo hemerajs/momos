@@ -9,7 +9,7 @@ Momos - Reverse proxy to handle server-side-includes as custom elements without 
 - **No configs**: Everything is configurable via HTML5 attributes
 - **Fallback**: Define default content or an error template `ssi-error`
 - **Reliable**: Define timeouts to avoid hanging requests.
-- **Custom elements**: Handle SSI elements as custom elememts `ssi-*`
+- **Custom elements**: Handle SSI blocks as custom elememts `ssi-*`
 
 ## Example
 ```html
