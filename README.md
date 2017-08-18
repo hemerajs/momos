@@ -21,12 +21,11 @@ Momos - Reverse proxy to handle server-side-includes as custom elements without 
 <body>
 
   <ssi-basket
+    name="basket"
     cache="5000"
     timeout="2000"
     fallback="<url> | <elementId>"
-    url="https://domain.de/basket"
-    query="userId=5"
-    headers="x-request-id=123456">
+    url="https://domain.de/basket">
 
    <!-- place here content on success -->
 
