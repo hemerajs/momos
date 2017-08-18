@@ -4,13 +4,13 @@
 
 Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. This is proof-of-concept. 
 
-- **Cache:** Requests to your downstream are cached with Rfc7234
-- **Fast:** SSI are loaded in parallel
+- **Cache:** Requests are cached with RFC7234
+- **Fast:** SSI Fragments are loaded in parallel
 - **No proxy configs**: Everything is configurable via HTML5 attributes
-- **Dev-friendly**: Frontend developer can easily create fragments
+- **Dev-friendly**: Frontend developer can create fragments easily
 - **Fallback**: Define default content or an error template `ssi-error`
-- **Reliable**: Define timeouts to avoid hanging requests.
-- **Custom elements**: Handle SSI blocks as custom elememts `ssi-*`
+- **Reliable**: Define timeout message `ssi-timeout` to avoid cascading failures or hanging requests.
+- **Just HTML**: Define SSI fragments as in HTML blocks `ssi-*`
 
 ## What are SSI?
 
@@ -32,7 +32,7 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
     cache="5000"
     timeout="2000"
     fallback="<url> | <elementId>"
-    url="https://domain.de/basket">
+    src="https://domain.de/basket">
     
     <!-- Default content -->
     
