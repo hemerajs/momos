@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -15,6 +16,8 @@ type proxyTransport struct {
 
 // RoundTrip will replace "server" with "schmerver"
 func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
+
+	timeStart := time.Now()
 
 	// get the response of an given request
 	resp, err = t.RoundTripper.RoundTrip(req)
@@ -63,6 +66,8 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	resp.Body = body
 	resp.ContentLength = int64(len(content)) // update content length
 	resp.Header.Set("Content-Length", strconv.Itoa(len(content)))
+
+	debugf("Process Complete Request %q took %q", req.URL, time.Since(timeStart))
 
 	return resp, nil
 }

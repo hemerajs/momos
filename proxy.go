@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/lox/httpcache"
-	"github.com/lox/httpcache/httplog"
 )
 
 type Proxy struct {
@@ -25,7 +24,7 @@ func New(proxyUrl, targetUrl string) *Proxy {
 		panic(tErr)
 	}
 
-	httpcache.DebugLogging = true
+	// httpcache.DebugLogging = true
 
 	p := &Proxy{}
 	p.proxyURL = proxyUrl
@@ -36,10 +35,12 @@ func New(proxyUrl, targetUrl string) *Proxy {
 	p.handler = httpcache.NewHandler(p.cache, p.reverseProxy)
 	p.handler.Shared = true
 
-	respLogger := httplog.NewResponseLogger(p.handler)
-	respLogger.DumpRequests = true
-	respLogger.DumpResponses = true
-	respLogger.DumpErrors = true
+	/*
+		respLogger := httplog.NewResponseLogger(p.handler)
+		respLogger.DumpRequests = true
+		respLogger.DumpResponses = true
+		respLogger.DumpErrors = true
+	*/
 
 	return p
 }

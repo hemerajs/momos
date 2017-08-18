@@ -61,6 +61,7 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - [ ] Generate great debug informations about the structure of your page.
 - [ ] Use single http client and create request with http.NewReques
 - [ ] Start multiple requests concurrently with go channels
+- [ ] Collect metrics
 
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)

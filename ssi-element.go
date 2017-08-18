@@ -104,7 +104,9 @@ func (s *SSIElement) makeRequest() error {
 	if fragmentURL, ok := s.Attributes["src"]; ok {
 		timeout := time.Duration(time.Duration(timeoutMs) * time.Millisecond)
 		client := http.Client{Timeout: timeout}
+		timeStart := time.Now()
 		resp, err := client.Get(fragmentURL)
+		debugf("Request to %q took %q", fragmentURL, time.Since(timeStart))
 
 		if err != nil {
 			errorf("Request error %q", fragmentURL)
