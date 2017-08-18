@@ -42,6 +42,7 @@ Momos - Reverse proxy to handle server-side-includes as custom elements without 
 - [ ] Use the net/http package to fetch the SSI Content
 - [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
+- [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
 
 ### Credits
 Icon made by [author](https://www.flaticon.com/authors/dinosoftlabs) from www.flaticon.com
