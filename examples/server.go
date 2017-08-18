@@ -37,7 +37,7 @@ func main() {
 	}()
 
 	momos.DebugLogging = true
-	// Start reverse proxy and replace "server" with "schmerver"
+
 	p := momos.New("127.0.0.1:9090", "http://127.0.0.1:8080")
 	err := p.Start()
 	if err != nil {

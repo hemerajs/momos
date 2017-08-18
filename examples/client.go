@@ -10,6 +10,7 @@ func main() {
 
 	client := http.Client{}
 	resp, err := client.Get("http://127.0.0.1:9090/llamas")
+	defer resp.Body.Close()
 
 	if err != nil {
 		panic(err)
@@ -18,6 +19,5 @@ func main() {
 	b, _ := ioutil.ReadAll(resp.Body)
 
 	fmt.Printf("%v\n", string(b))
-	resp.Body.Close()
 
 }
