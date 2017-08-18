@@ -9,7 +9,7 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - **No proxy configs**: Everything is configurable via HTML5 attributes
 - **Dev-friendly**: Frontend developer can create fragments easily
 - **Fallback**: Define default content or an error template with `<ssi-error>`
-- **Reliable**: Define timeout message with `<ssi-timeout>
+- **Reliable**: Define timeout message with `<ssi-timeout>`
 - **Just HTML**: Define SSI fragments with HTML element `<ssi>`
 
 ## What are SSI?
