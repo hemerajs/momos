@@ -38,21 +38,6 @@ Momos - Reverse proxy to handle server-side-includes as custom elements without 
 </html>
 ```
 
-## Flow
-
-```
-+---------------+      +-----------+      +---------+       
-|               |      |           |      |         |       
-|    Backend    |<-----|   Momos   |<-----|  NGINX  |       
-|               |      |           |      |         |       
-+---------------+      +-----|-----+      +---------+       
-                             |                              
-                             v                              
-                       +-----------+                        
-                       |    SSI    |                        
-                       +-----------+                                                                                                     
-```
-
 ## TODO
 - [ ] Use the net/http package to fetch the SSI Content
 - [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
