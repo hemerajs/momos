@@ -12,6 +12,12 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - **Reliable**: Define timeouts to avoid hanging requests.
 - **Custom elements**: Handle SSI blocks as custom elememts `ssi-*`
 
+## What are SSI?
+
+> SSI (Server Side Includes) are directives that are placed in HTML pages, and evaluated on the server while the pages are being served. They let you add dynamically generated content to an existing HTML page, without having to serve the entire page via a CGI program, or other dynamic technology.
+[Reference](https://httpd.apache.org/docs/current/howto/ssi.html#page-header)
+
+
 ## Example
 ```html
 <!doctype html>
@@ -48,6 +54,9 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
 - [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
-
+- [ ] Generate great debug informations about the structure of your page.
+### References
+- [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
+- []()
 ### Credits
 Icon made by [author](https://www.flaticon.com/authors/dinosoftlabs) from www.flaticon.com
