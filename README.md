@@ -2,11 +2,12 @@
     <img src="logo.png" alt="Momos logo" /><br /><br />
 </p>
 
-Momos - Reverse proxy to define server-side-includes via HTML5 and attributes.
+Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. This is proof-of-concept. 
 
 - **Cache:** Requests to your downstream are cached with Rfc7234
 - **Fast:** SSI are loaded in parallel
-- **No configs**: Everything is configurable via HTML5 attributes
+- **No proxy configs**: Everything is configurable via HTML5 attributes
+- **Dev-friendly**: Frontend developer can easily create fragments
 - **Fallback**: Define default content or an error template `ssi-error`
 - **Reliable**: Define timeouts to avoid hanging requests.
 - **Custom elements**: Handle SSI blocks as custom elememts `ssi-*`
@@ -26,11 +27,15 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes.
     timeout="2000"
     fallback="<url> | <elementId>"
     url="https://domain.de/basket">
-
-   <!-- place here content on success -->
-
-   <ssi-error>
+    
+    <!-- Default content -->
+    
+    <ssi-timeout>
     <span>Please try it again!</span>
+   </ssi-timeout>
+   
+   <ssi-error>
+    <span>Please call the support!</span>
    </ssi-error>
   </ssi>
   
