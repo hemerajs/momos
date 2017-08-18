@@ -59,7 +59,7 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
 - [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
 - [ ] Generate great debug informations about the structure of your page.
-- [ ] Use single request and create request with http.NewReques
+- [ ] Use single http client and create request with http.NewReques
 
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
