@@ -26,11 +26,15 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes.
     timeout="2000"
     fallback="<url> | <elementId>"
     url="https://domain.de/basket">
-
-   <!-- place here content on success -->
-
-   <ssi-error>
+    
+    <!-- Default content -->
+    
+    <ssi-timeout>
     <span>Please try it again!</span>
+   </ssi-timeout>
+   
+   <ssi-error>
+    <span>Please call the support!</span>
    </ssi-error>
   </ssi>
   
