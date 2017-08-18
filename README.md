@@ -2,7 +2,7 @@
     <img src="logo.png" alt="Momos logo" /><br /><br />
 </p>
 
-Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. This is proof-of-concept. 
+Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. No html comments or complicate configurations. This is proof-of-concept. 
 
 - **Cache:** Requests are cached with RFC7234
 - **Fast:** SSI Fragments are loaded in parallel
@@ -11,6 +11,9 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - **Fallback**: Define default content or an error template with `<ssi-error>`
 - **Reliable**: Define timeout message with `<ssi-timeout>`
 - **Just HTML**: Define SSI fragments with HTML element `<ssi>`
+
+## Why you don't use Nginx?
+Good point. Nginx is a great proxy and although it already provide a robust SSI directives I would like to see a solution which don't require a restart or reload of the proxy when parmaters has to be changed. The transitions between defining SSI fragments and configure them should be smooth for any kind of developer. Momos should provide a high performance proxy to provide advanced SSI functionality. Any developer should be able to place SSI fragments and configure them with only html knowledge. Momos is very easy to extend.
 
 ## What are SSI?
 
