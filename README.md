@@ -6,6 +6,7 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. N
 
 - **Cache:** Requests are cached with RFC7234
 - **Fast:** SSI Fragments are loaded in parallel
+- **Neutral**: Doesn't matter which technology you used.
 - **No proxy configs**: Everything is configurable via HTML5 attributes
 - **Dev-friendly**: Frontend developer can create fragments easily
 - **Fallback**: Define default content or an error template with `<ssi-error>`
