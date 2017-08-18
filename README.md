@@ -2,15 +2,19 @@
     <img src="logo.png" alt="Momos logo" /><br /><br />
 </p>
 
-Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. This is proof-of-concept. 
+Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. No html comments or complicate configurations. This is proof-of-concept. 
 
 - **Cache:** Requests are cached with RFC7234
 - **Fast:** SSI Fragments are loaded in parallel
+- **Neutral**: Doesn't matter which technology you used.
 - **No proxy configs**: Everything is configurable via HTML5 attributes
 - **Dev-friendly**: Frontend developer can create fragments easily
 - **Fallback**: Define default content or an error template with `<ssi-error>`
 - **Reliable**: Define timeout message with `<ssi-timeout>`
 - **Just HTML**: Define SSI fragments with HTML element `<ssi>`
+
+## Why you don't use Nginx?
+Good point. Nginx is a great proxy and although it already provides robust SSI directives I would like to see a solution which don't require a restart or reload of the proxy when parameters has to be changed. The transition between defining SSI fragments and configure them should be smooth for any kind of developer. Momos should provide a high performance proxy with advanced SSI functionality. Any developer should be able to place and configure SSI fragments with html knowledge. Momos is very easy to extend and is compiled to a single binary. It provides great debugging experience to understand how your page is build which is often difficult in proxys like Nginx or Apache.
 
 ## What are SSI?
 
@@ -54,12 +58,12 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 ```
 
 ## TODO
-- [ ] Use the net/http package to fetch the SSI Content
-- [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
+- [X] Use the net/http package to fetch the SSI Content
+- [X] Use [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
 - [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
-- [ ] Generate great debug informations about the structure of your page.
-- [ ] Use single http client and create request with http.NewReques
+- [ ] Generate great debug informations about the structure of your page
+- [ ] Use single http client and create request with http.NewRequest
 - [ ] Start multiple requests concurrently with go channels
 - [ ] Collect metrics
 
