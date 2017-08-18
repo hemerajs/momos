@@ -58,8 +58,8 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
 - [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
-- [ ] Generate great debug informations about the structure of your page.
-- [ ] Use single http client and create request with http.NewReques
+- [ ] Generate great debug informations about the structure of your page
+- [ ] Use single http client and create request with http.NewRequest
 - [ ] Start multiple requests concurrently with go channels
 
 ### References
