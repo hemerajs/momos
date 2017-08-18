@@ -21,6 +21,7 @@ func New(proxyUrl, targetUrl string) *Proxy {
 	target, tErr := url.Parse(targetUrl)
 
 	if tErr != nil {
+		errorf("Invalid url: %v", targetUrl)
 		panic(tErr)
 	}
 
