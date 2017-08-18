@@ -5,6 +5,7 @@ import (
 	"net"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -106,15 +107,23 @@ func (s *SSIElement) makeRequest() error {
 		client := http.Client{Timeout: timeout}
 		timeStart := time.Now()
 		resp, err := client.Get(fragmentURL)
-		debugf("Request to %q took %q", fragmentURL, time.Since(timeStart))
 
-		if err != nil {
+		debugf("[%q] Request to %q took %q", s.Attributes["name"], fragmentURL, time.Since(timeStart))
+
+		// Only html
+		contentType := resp.Header.Get("Content-Type")
+		if !strings.Contains(contentType, "text/html") {
+			errorf("ssi: invalid content type %q", fragmentURL, contentType)
+			return nil
+		}
+
+		if err != nil { // request error
 			errorf("Request error %q", fragmentURL)
 			s.replaceWithErrorHTML()
-		} else if err, ok := err.(net.Error); ok && err.Timeout() {
+		} else if err, ok := err.(net.Error); ok && err.Timeout() { // Timeout
 			errorf("Request timeouts %q, timeout: %q", fragmentURL, timeout)
 			s.replaceWithTimeoutHTML()
-		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
+		} else if resp.StatusCode > 199 && resp.StatusCode < 300 { // None 2xx status code
 			content, err := ioutil.ReadAll(resp.Body)
 			defer resp.Body.Close()
 
@@ -124,7 +133,7 @@ func (s *SSIElement) makeRequest() error {
 			}
 			// replace with content from ssi service
 			s.Element.ReplaceWithHtml(string(content))
-		} else {
+		} else { // Default
 			errorf("invalid request code %v from %q", resp.StatusCode, fragmentURL)
 			s.replaceWithErrorHTML()
 		}

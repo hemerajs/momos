@@ -49,7 +49,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		err := se.makeRequest()
 
 		if err != nil {
-			errorf("ssi error for url: %q, name: %q", req.URL, se.Attributes["name"])
+			errorf("ssi error %q", req.URL, se.Attributes["name"])
 		}
 	})
 
