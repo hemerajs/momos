@@ -57,8 +57,8 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 ```
 
 ## TODO
-- [ ] Use the net/http package to fetch the SSI Content
-- [ ] Use the golang.org/x/net/html or [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
+- [X] Use the net/http package to fetch the SSI Content
+- [X] Use [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
 - [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
 - [ ] Generate great debug informations about the structure of your page
