@@ -32,7 +32,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 
 	// Just an example
 
-	doc.Find("[ssi]").Each(func(i int, element *goquery.Selection) {
+	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
 		se := SSIElement{}
 		se.Pos = element.Index()
 		se.Attributes = SSIAttributes{
@@ -43,7 +43,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 			"name":     element.AttrOr("name", ""),
 		}
 
-		elementErrorTag := element.Find("[ssi-error]")
+		elementErrorTag := element.Find("ssi-error")
 		se.HasErrorTag = elementErrorTag.Length() > 0
 
 		elementErrorTagHTML, tagErr := elementErrorTag.Html()

@@ -2,7 +2,7 @@
     <img src="logo.png" alt="Momos logo" /><br /><br />
 </p>
 
-Momos - Reverse proxy to select server-side-includes via custom attributes without static configuration.
+Momos - Reverse proxy to define server-side-includes via HTML5 and attributes.
 
 - **Cache:** Requests to your downstream are cached with Rfc7234
 - **Fast:** SSI are loaded in parallel
@@ -20,8 +20,7 @@ Momos - Reverse proxy to select server-side-includes via custom attributes witho
   <meta charset="utf-8">
 <body>
 
-  <div
-    ssi
+  <ssi
     name="basket"
     cache="5000"
     timeout="2000"
@@ -30,10 +29,10 @@ Momos - Reverse proxy to select server-side-includes via custom attributes witho
 
    <!-- place here content on success -->
 
-   <div ssi-error>
+   <ssi-error>
     <span>Please try it again!</span>
-   </div>
-  </ssi-basket>
+   </ssi-error>
+  </ssi>
   
 </body>
 </html>
