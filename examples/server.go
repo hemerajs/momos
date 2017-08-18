@@ -11,8 +11,8 @@ import (
 func hello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "max-age=100000")
 	w.Header().Set("Content-Type", "text/html")
-	fmt.Fprintf(w, "<ssi>Hello, you've hit the server %s <b>%v</b>", r.URL.Path, rand.Int())
-	fmt.Fprint(w, "<ssi-error>Please call the support!</ssi-error>")
+	fmt.Fprintf(w, "<ssi src=\"http://google.de\">Hello, you've hit the server %s <b>%v</b>", r.URL.Path, rand.Int())
+	fmt.Fprint(w, "<ssi-error>Please call the supportededed!</ssi-error>")
 	fmt.Fprint(w, "<ssi-timeout>Please try it again!</ssi-timeout>")
 	fmt.Fprint(w, "</ssi>")
 }

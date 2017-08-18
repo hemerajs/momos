@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -33,29 +34,50 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	// Just an example
 
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
-		se := SSIElement{}
+		se := SSIElement{Element: element}
 		se.Pos = element.Index()
 		se.Attributes = SSIAttributes{
 			"timeout":  element.AttrOr("timeout", "2000"),
-			"url":      element.AttrOr("timeout", ""),
+			"src":      element.AttrOr("src", ""),
 			"fallback": element.AttrOr("fallback", ""),
 			"cache":    element.AttrOr("cache", ""),
 			"name":     element.AttrOr("name", ""),
 		}
 
-		elementErrorTag := element.Find("ssi-error")
-		se.HasErrorTag = elementErrorTag.Length() > 0
+		se.GetError()
+		se.GetTimeout()
 
-		elementErrorTagHTML, tagErr := elementErrorTag.Html()
+		// get SSI content and replace tag
+		if fragmentUrl, ok := se.Attributes["src"]; ok {
+			// @TODO parse timeout
+			timeout := time.Duration(2000 * time.Millisecond)
+			fmt.Printf("Call: %v\n", fragmentUrl)
+			client := http.Client{Timeout: timeout}
+			resp, err := client.Get(fragmentUrl)
 
-		if tagErr != nil {
-			panic(err)
+			//@TODO error handling
+			if err != nil {
+				html, err := se.Error.Html()
+
+				//@TODO error handling
+				if err == nil {
+					element.ReplaceWithHtml(html)
+				}
+			} else {
+				content, err := ioutil.ReadAll(resp.Body)
+
+				if err != nil {
+					panic(err)
+				}
+
+				element.ReplaceWithHtml(string(content))
+				resp.Body.Close()
+			}
 		}
-
-		se.ErrorHTML = elementErrorTagHTML
 
 		eHTML, err := element.Html()
 
+		//@TODO error handling
 		if err != nil {
 			panic(err)
 		}
@@ -70,8 +92,6 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	if err != nil {
 		panic(err)
 	}
-
-	fmt.Printf("%v", htmlDoc)
 
 	// assign new reader with content
 	content := []byte(htmlDoc)
