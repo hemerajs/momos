@@ -32,15 +32,38 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 
 	// Just an example
 
-	element := doc.Find("ssi-teaser")
+	doc.Find("[ssi]").Each(func(i int, element *goquery.Selection) {
+		se := SSIElement{}
+		se.Pos = element.Index()
+		se.Attributes = SSIAttributes{
+			"timeout":  element.AttrOr("timeout", "2000"),
+			"url":      element.AttrOr("timeout", ""),
+			"fallback": element.AttrOr("fallback", ""),
+			"cache":    element.AttrOr("cache", ""),
+			"name":     element.AttrOr("name", ""),
+		}
 
-	eHTML, err := element.Html()
+		elementErrorTag := element.Find("[ssi-error]")
+		se.HasErrorTag = elementErrorTag.Length() > 0
 
-	if err != nil {
-		panic(err)
-	}
+		elementErrorTagHTML, tagErr := elementErrorTag.Html()
 
-	element.SetHtml(strings.Replace(eHTML, "server", "schmerver", -1))
+		if tagErr != nil {
+			panic(err)
+		}
+
+		se.ErrorHTML = elementErrorTagHTML
+
+		eHTML, err := element.Html()
+
+		if err != nil {
+			panic(err)
+		}
+
+		se.Len = len(eHTML)
+
+		element.SetHtml(strings.Replace(eHTML, "server", "schmerver", -1))
+	})
 
 	htmlDoc, err := doc.Html()
 
