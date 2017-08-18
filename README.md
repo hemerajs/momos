@@ -57,6 +57,6 @@ Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. T
 - [ ] Generate great debug informations about the structure of your page.
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
-- []()
+- [Apache SSI](https://httpd.apache.org/docs/current/howto/ssi.html#page-header)
 ### Credits
 Icon made by [author](https://www.flaticon.com/authors/dinosoftlabs) from www.flaticon.com
