@@ -9,6 +9,8 @@ import (
 	"github.com/lox/httpcache/httplog"
 )
 
+var ServerLogging = false
+
 type Proxy struct {
 	reverseProxy *httputil.ReverseProxy
 	proxyURL     string
@@ -25,7 +27,7 @@ func New(proxyUrl, targetUrl string) *Proxy {
 		panic(tErr)
 	}
 
-	// httpcache.DebugLogging = true
+	httpcache.DebugLogging = ServerLogging
 
 	p := &Proxy{}
 	p.proxyURL = proxyUrl

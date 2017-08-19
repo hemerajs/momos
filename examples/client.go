@@ -19,5 +19,6 @@ func main() {
 	b, _ := ioutil.ReadAll(resp.Body)
 
 	fmt.Printf("%v\n", string(b))
+	fmt.Printf("Cached: %v\n", resp.Header.Get("X-Cache"))
 
 }

@@ -65,17 +65,17 @@ $ go run examples/client.go
 ### Expected output
 Requests are cached for 10 seconds `max-age=10`
 ```
-2017/08/19 13:21:26 ★ SSI [basket5] - Response was cached
-2017/08/19 13:21:26 ➫ SSI [basket] - Request to http://localhost:8081 took 1.0012ms
-2017/08/19 13:21:26 ★ SSI [basket2] - Response was cached
-2017/08/19 13:21:26 ➫ SSI [basket2] - Request to http://localhost:8081 took 1.0012ms
-2017/08/19 13:21:26 ★ SSI [basket4] - Response was cached
-2017/08/19 13:21:26 ➫ SSI [basket3] - Request to http://localhost:8081 took 1.0012ms
-2017/08/19 13:21:26 ★ SSI [basket] - Response was cached
-2017/08/19 13:21:26 ➫ SSI [basket4] - Request to http://localhost:8081 took 1.0012ms
-2017/08/19 13:21:26 ★ SSI [basket3] - Response was cached
-2017/08/19 13:21:26 ➫ SSI [basket5] - Request to http://localhost:8081 took 1.0012ms
-2017/08/19 13:21:26 ✓ Process Complete Request "http://127.0.0.1:8080/favicon.ico" took "1.0012ms"
+2017/08/19 13:51:11 ★ Fragment (basket5) - Response was cached
+2017/08/19 13:51:11 ★ Fragment (basket) - Response was cached
+2017/08/19 13:51:11 ★ Fragment (basket3) - Response was cached
+2017/08/19 13:51:11 ★ Fragment (basket4) - Response was cached
+2017/08/19 13:51:11 ★ Fragment (basket2) - Response was cached
+2017/08/19 13:51:11 ➫ Fragment (basket) - Request to http://localhost:8081 took 0s
+2017/08/19 13:51:11 ➫ Fragment (basket2) - Request to http://localhost:8081 took 0s
+2017/08/19 13:51:11 ➫ Fragment (basket3) - Request to http://localhost:8081 took 0s
+2017/08/19 13:51:11 ➫ Fragment (basket4) - Request to http://localhost:8081 took 0s
+2017/08/19 13:51:11 ➫ Fragment (basket5) - Request to http://localhost:8081 took 0s
+2017/08/19 13:51:11 ✓ Process Complete Request "http://127.0.0.1:8080/" took "0s"
 ```
 
 

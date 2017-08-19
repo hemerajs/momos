@@ -80,11 +80,11 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	for _, element := range ssiElements {
 		select {
 		case res := <-ch:
-			debugf("➫ SSI [%v] - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
+			debugf("➫ Fragment (%v) - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
 			element.SetupSuccess(res)
 		case err := <-chErr:
 			element.SetupFallback(err)
-			debugf("➫ SSI [%v] - Request to %v error: %q", element.Name(), element.Url(), err)
+			debugf("➫ Fragment (%v) - Request to %v error: %q", element.Name(), element.Url(), err)
 		}
 	}
 
@@ -124,9 +124,9 @@ func makeRequest(name string, url string, ch chan<- []byte, chErr chan<- error, 
 			body, _ := ioutil.ReadAll(resp.Body)
 
 			if resp.Header.Get("X-From-Cache") == "1" {
-				debugf("★ SSI [%v] - Response was cached", name)
+				debugf("★ Fragment (%v) - Response was cached", name)
 			} else {
-				debugf("☆ SSI [%v] - Response was refreshed", name)
+				debugf("☆ Fragment (%v) - Response was refreshed", name)
 			}
 
 			resp.Body.Close()
