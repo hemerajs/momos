@@ -4,15 +4,14 @@
 
 Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. No html comments or complicate configurations. This is proof-of-concept. 
 
-- **Cache:** Requests are cached with RFC7234 with support for memory and file storage
+- **Cache:** Requests are cached with RFC7234 with support for memory and file storage.
 - **Lightweight:** Just ~300 lines of code. We trust in well-tested packages.
-- **Fast:** SSI Fragments are loaded in parallel
-- **Neutral**: Doesn't matter which technology you used.
-- **No proxy configs**: Everything is configurable via HTML5 attributes
-- **Dev-friendly**: Frontend developer can create fragments easily
-- **Fallback**: Define default content or an error template with `<ssi-error>`
-- **Reliable**: Define a timeout message with `<ssi-timeout>`
-- **Just HTML**: Define SSI fragments with pure HTML `<ssi>`
+- **Fast:** SSI Fragments are loaded in parallel.
+- **No proxy configs**: Everything is configurable via HTML5 attributes.
+- **Dev-friendly**: Frontend developer can create fragments easily.
+- **Fallback**: Define default content or an error template with `<ssi-error>`.
+- **Reliable**: Define a timeout message with `<ssi-timeout>`.
+- **Just HTML**: Define SSI fragments with pure HTML `<ssi>`.
 
 ## Why you don't use Nginx?
 Good point. Nginx is a great proxy and although it already provides robust SSI directives I would like to see a solution which don't require a restart or reload of the proxy when parameters has to be changed. The transition between defining SSI fragments and configure them should be smooth for any kind of developer. Momos should provide a high performance proxy with advanced SSI functionality. Any developer should be able to place and configure SSI fragments with html knowledge. Momos is very easy to extend and is compiled to a single binary. It provides great debugging experience to understand how your page is build which is often difficult in proxys like Nginx or Apache.
