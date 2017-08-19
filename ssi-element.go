@@ -1,6 +1,8 @@
 package momos
 
 import (
+	"bytes"
+	"html/template"
 	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
@@ -12,16 +14,23 @@ const (
 	defaultTimeout = 2000
 )
 
+type TemplateContext struct {
+	DateLocal string
+	Date      string
+	RequestId string
+}
+
 type SSIAttributes map[string]string
 
 type SSIElement struct {
-	Tag           string
-	HasErrorTag   bool
-	errorTag      *goquery.Selection
-	HasTimeoutTag bool
-	timeoutTag    *goquery.Selection
-	Attributes    SSIAttributes
-	Element       *goquery.Selection
+	Tag             string
+	HasErrorTag     bool
+	errorTag        *goquery.Selection
+	HasTimeoutTag   bool
+	timeoutTag      *goquery.Selection
+	Attributes      SSIAttributes
+	Element         *goquery.Selection
+	templateContext TemplateContext
 }
 
 func (s *SSIElement) GetErrorTag() error {
@@ -65,7 +74,11 @@ func (s *SSIElement) replaceWithDefaultHTML() error {
 	html, err := s.Element.Html()
 
 	if err == nil {
-		s.Element.ReplaceWithHtml(html)
+		err := s.ReplaceWithHtml(html)
+		if err != nil {
+			s.replaceWithDefaultHTML()
+			return err
+		}
 	} else {
 		return err
 	}
@@ -78,13 +91,38 @@ func (s *SSIElement) replaceWithErrorHTML() error {
 		html, err := s.errorTag.Html()
 
 		if err == nil {
-			s.Element.ReplaceWithHtml(html)
+			err := s.ReplaceWithHtml(html)
+			if err != nil {
+				s.replaceWithDefaultHTML()
+				return err
+			}
 		} else {
 			return err
 		}
 	} else {
 		s.replaceWithDefaultHTML()
 	}
+
+	return nil
+}
+
+func (s *SSIElement) ReplaceWithHtml(html string) error {
+	var doc bytes.Buffer
+	tpl, err := template.New(s.Name()).Parse(html)
+
+	if err != nil {
+		errorf("template parsing error %q", err)
+		return err
+	}
+
+	err = tpl.Execute(&doc, s.templateContext)
+
+	if err != nil {
+		errorf("Error during template rendering %q", err)
+		return err
+	}
+
+	s.Element.ReplaceWithHtml(doc.String())
 
 	return nil
 }
@@ -94,7 +132,11 @@ func (s *SSIElement) replaceWithTimeoutHTML() error {
 		html, err := s.timeoutTag.Html()
 
 		if err == nil {
-			s.Element.ReplaceWithHtml(html)
+			err := s.ReplaceWithHtml(html)
+			if err != nil {
+				s.replaceWithDefaultHTML()
+				return err
+			}
 		} else {
 			return err
 		}
@@ -105,8 +147,8 @@ func (s *SSIElement) replaceWithTimeoutHTML() error {
 	return nil
 }
 
-func (s *SSIElement) SetupSuccess(body []byte) {
-	s.Element.ReplaceWithHtml(string(body))
+func (s *SSIElement) SetupSuccess(body []byte) error {
+	return s.ReplaceWithHtml(string(body))
 }
 
 func (s *SSIElement) SetupFallback(err error) error {

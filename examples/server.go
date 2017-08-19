@@ -1,7 +1,6 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
 
 	"github.com/hemerajs/momos"
@@ -14,29 +13,13 @@ type Page struct {
 func backendHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
-
-	templ, err := template.ParseFiles("examples/advanced.html")
-
-	if err != nil {
-		panic(err)
-	}
-
-	templ.Execute(w, Page{Title: "Example SSI"})
-
+	http.ServeFile(w, r, "examples/advanced.html")
 }
 
 func ssiHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
-
-	templ, err := template.ParseFiles("examples/ssi.html")
-
-	if err != nil {
-		panic(err)
-	}
-
-	templ.Execute(w, Page{Title: "Example SSI"})
-
+	http.ServeFile(w, r, "examples/ssi.html")
 }
 
 func main() {

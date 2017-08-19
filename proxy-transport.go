@@ -57,6 +57,11 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
 		se := SSIElement{Element: element}
+		se.templateContext = TemplateContext{
+			DateLocal: time.Now().Local().Format("2006-01-02"),
+			Date:      time.Now().Format(time.RFC3339),
+			RequestId: req.Header.Get("X-Request-Id"),
+		}
 		se.Attributes = SSIAttributes{
 			"timeout": element.AttrOr("timeout", "2000"),
 			"src":     element.AttrOr("src", ""),
