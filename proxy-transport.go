@@ -2,13 +2,25 @@ package momos
 
 import (
 	"bytes"
+	"errors"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
+
+var (
+	ErrRequest            = errors.New("Request error")
+	ErrTimeout            = errors.New("Timeout error")
+	ErrInvalidStatusCode  = errors.New("Invalid status code")
+	ErrInvalidContentType = errors.New("Invalid content type")
+)
+
+var Client = &http.Client{}
 
 type proxyTransport struct {
 	http.RoundTripper
@@ -33,25 +45,39 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		return nil, err
 	}
 
+	ssiElements := []SSIElement{}
+
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
 		se := SSIElement{Element: element}
 		se.Attributes = SSIAttributes{
-			"timeout":  element.AttrOr("timeout", "2000"),
-			"src":      element.AttrOr("src", ""),
-			"fallback": element.AttrOr("fallback", ""),
-			"cache":    element.AttrOr("cache", ""),
-			"name":     element.AttrOr("name", ""),
+			"timeout": element.AttrOr("timeout", "2000"),
+			"src":     element.AttrOr("src", ""),
+			"cache":   element.AttrOr("cache", ""),
+			"name":    element.AttrOr("name", ""),
 		}
 
-		se.GetErrorHTML()
-		se.GetTimeoutHTML()
+		se.GetErrorTag()
+		se.GetTimeoutTag()
 
-		err := se.makeRequest()
-
-		if err != nil {
-			errorf("ssi error %q", req.URL, se.Attributes["name"])
-		}
+		ssiElements = append(ssiElements, se)
 	})
+
+	ch := make(chan []byte)
+	chErr := make(chan error)
+
+	for _, element := range ssiElements {
+		timeout, _ := element.Timeout()
+		go makeRequest(element.Attributes["src"], ch, chErr, timeout)
+	}
+
+	for _, element := range ssiElements {
+		select {
+		case res := <-ch:
+			element.SetupSuccess(res)
+		case err := <-chErr:
+			element.SetupFallback(err)
+		}
+	}
 
 	htmlDoc, err := doc.Html()
 
@@ -70,4 +96,29 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	debugf("Process Complete Request %q took %q", req.URL, time.Since(timeStart))
 
 	return resp, nil
+}
+
+func makeRequest(url string, ch chan<- []byte, chErr chan<- error, timeoutMs int) {
+	timeout := time.Duration(time.Duration(timeoutMs) * time.Millisecond)
+	timeStart := time.Now()
+	Client.Timeout = timeout
+	resp, err := Client.Get(url)
+
+	debugf("Request to %q took %q", url, time.Since(timeStart))
+
+	if err != nil {
+		chErr <- ErrRequest
+	} else if err, ok := err.(net.Error); ok && err.Timeout() {
+		chErr <- ErrTimeout
+	} else {
+		contentType := resp.Header.Get("Content-Type")
+		if !strings.Contains(contentType, "text/html") {
+			chErr <- ErrInvalidContentType
+		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
+			body, _ := ioutil.ReadAll(resp.Body)
+			resp.Body.Close()
+			ch <- body
+		}
+	}
+
 }

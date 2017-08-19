@@ -35,7 +35,6 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
     name="basket"
     cache="5000"
     timeout="2000"
-    fallback=""
     src="http://starptech.de">
 
     <!-- a) Used when no error or timeout field was set -->
@@ -57,6 +56,14 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 </html>
 ```
 
+## Run it
+
+```
+$ go run examples/server.go
+$ Browser to http://localhost:9090/
+```
+
+
 ## TODO
 - [X] Use the net/http package to fetch the SSI Content
 - [X] Use [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
@@ -64,7 +71,7 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 - [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
 - [ ] Generate great debug informations about the structure of your page
 - [ ] Use single http client and create request with http.NewRequest
-- [ ] Start multiple requests concurrently with go channels
+- [X] Start multiple requests concurrently with go channels
 - [ ] Collect metrics
 
 ### References
