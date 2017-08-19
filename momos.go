@@ -19,6 +19,13 @@ type Proxy struct {
 	cache        httpcache.Cache
 }
 
+func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
+	return func(res http.ResponseWriter, req *http.Request) {
+		debugf("▨ PreResponse (%v) - Cache is %v", req.Host+req.URL.String(), res.Header().Get("X-Cache"))
+		h.ServeHTTP(res, req)
+	}
+}
+
 func New(proxyUrl, targetUrl string) *Proxy {
 	target, tErr := url.Parse(targetUrl)
 
@@ -35,7 +42,7 @@ func New(proxyUrl, targetUrl string) *Proxy {
 	p.reverseProxy.Transport = &proxyTransport{http.DefaultTransport}
 
 	p.cache = httpcache.NewMemoryCache()
-	p.handler = httpcache.NewHandler(p.cache, p.reverseProxy)
+	p.handler = httpcache.NewHandler(p.cache, PreCacheResponseHandler(p.reverseProxy))
 	p.handler.Shared = true
 
 	respLogger := httplog.NewResponseLogger(p.handler)
