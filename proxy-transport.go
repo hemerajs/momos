@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	clientCache "github.com/gregjones/httpcache"
 )
 
 var (
@@ -20,7 +21,7 @@ var (
 	ErrInvalidContentType = errors.New("Invalid content type")
 )
 
-var Client = &http.Client{}
+var Client = &http.Client{Transport: clientCache.NewMemoryCacheTransport()}
 
 type proxyTransport struct {
 	http.RoundTripper

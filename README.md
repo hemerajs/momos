@@ -69,9 +69,9 @@ $ Browser to http://localhost:9090/
 - [X] Use the net/http package to fetch the SSI Content
 - [X] Use [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
 - [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
-- [ ] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
+- [X] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
 - [ ] Generate great debug informations about the structure of your page
-- [ ] Use single http client and create request with http.NewRequest
+- [X] Use single http client and create request with http.NewRequest
 - [X] Start multiple requests concurrently with go channels
 - [ ] Collect metrics
 
