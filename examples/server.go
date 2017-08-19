@@ -12,7 +12,7 @@ type Page struct {
 }
 
 func backendHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Cache-Control", "max-age=100000")
+	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
 
 	templ, err := template.ParseFiles("examples/advanced.html")
@@ -26,7 +26,7 @@ func backendHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ssiHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Cache-Control", "max-age=100000")
+	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
 
 	templ, err := template.ParseFiles("examples/ssi.html")

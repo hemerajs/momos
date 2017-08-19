@@ -63,6 +63,7 @@ $ go run examples/server.go
 $ go run examples/client.go
 ```
 ### Expected output
+Requests are cached for 10 seconds `max-age=10`
 ```
 2017/08/19 13:04:59 ⚛ SSI [basket] - Request to http://localhost:8081 took 0s
 2017/08/19 13:04:59 ⚛ SSI [basket2] - Request to http://localhost:8081 took 1ms
