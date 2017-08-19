@@ -58,7 +58,6 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		return nil, err
 	}
 
-	ssiCount := 0
 	ssiElements := map[string]SSIElement{}
 
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
@@ -80,7 +79,6 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		}
 
 		ssiElements[se.name] = se
-		ssiCount++
 	})
 
 	ch := make(chan ssiResult)
@@ -91,7 +89,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		go makeRequest(el.name, el.src, ch, el.timeout)
 	}
 
-	for i := 0; i < ssiCount; i++ {
+	for {
 		select {
 		case res := <-ch:
 			el := ssiElements[res.name]
