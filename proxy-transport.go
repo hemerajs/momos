@@ -27,7 +27,6 @@ type proxyTransport struct {
 	http.RoundTripper
 }
 
-// RoundTrip will replace "server" with "schmerver"
 func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 
 	timeStart := time.Now()
