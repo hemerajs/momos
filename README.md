@@ -5,6 +5,7 @@
 Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. No html comments or complicate configurations. This is proof-of-concept. 
 
 - **Cache:** Requests are cached with RFC7234 with support for memory and file storage
+- **Lightweight:** Just ~300 lines of code. We trust in well-tested packages.
 - **Fast:** SSI Fragments are loaded in parallel
 - **Neutral**: Doesn't matter which technology you used.
 - **No proxy configs**: Everything is configurable via HTML5 attributes
