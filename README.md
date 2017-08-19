@@ -59,6 +59,7 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 ## Run it
 
 ```
+$ go get ./...
 $ go run examples/server.go
 $ Browser to http://localhost:9090/
 ```
