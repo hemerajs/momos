@@ -23,7 +23,7 @@ func ssiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// API Mock
+	// Api Mock
 	api := http.NewServeMux()
 	api.HandleFunc("/", backendHandler)
 	go func() {
