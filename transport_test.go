@@ -15,7 +15,7 @@ import (
 var ssiURL string
 
 func SSITimeoutHandler(w http.ResponseWriter, r *http.Request) {
-	time.Sleep(3000 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprint(w, `<h1>hello</h1>`)
@@ -49,7 +49,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 	`)
 }
 
-func TestSpecSSIContent(t *testing.T) {
+func TestSSIContent(t *testing.T) {
 
 	ssiServer := httptest.NewServer(http.HandlerFunc(SSIHandler))
 	ssiURL = ssiServer.URL
@@ -99,26 +99,4 @@ func TestError(t *testing.T) {
 
 	assert.Equal(t, res.StatusCode, 200, "should return 200")
 	assert.Equal(t, "<html><head></head><body>\n\t\t<span>Please call the support!</span>\n\t\t\n\t</body></html>", bodyString)
-}
-
-func TestTimeout(t *testing.T) {
-
-	tsAPI := httptest.NewServer(http.HandlerFunc(SSITimeoutHandler))
-	defer tsAPI.Close()
-
-	p := New(tsAPI.URL)
-
-	server := httptest.NewServer(p.Handler)
-	defer server.Close()
-
-	res, err := http.Get(server.URL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	body, _ := ioutil.ReadAll(res.Body)
-	bodyString := string(body)
-
-	assert.Equal(t, res.StatusCode, 200, "should return 200")
-	assert.Equal(t, "<html><head></head><body>\n\t\t<span>Please try it again!</span>\n\t\t\n\t</body></html>", bodyString)
 }

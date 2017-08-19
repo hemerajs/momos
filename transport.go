@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/nats-io/nuid"
+
 	"github.com/PuerkitoBio/goquery"
 	clientCache "github.com/gregjones/httpcache"
 )
@@ -64,7 +66,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 
 		se.SetTimeout(element.AttrOr("timeout", "2000"))
 		se.SetSrc(element.AttrOr("src", ""))
-		se.SetName(element.AttrOr("name", ""))
+		se.SetName(element.AttrOr("name", nuid.Next()))
 		se.SetTemplate(element.AttrOr("template", "false"))
 
 		se.GetErrorTag()
