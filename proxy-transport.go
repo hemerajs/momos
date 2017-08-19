@@ -71,18 +71,21 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	ch := make(chan []byte)
 	chErr := make(chan error)
 
+	timeStartRequest := time.Now()
+
 	for _, element := range ssiElements {
 		timeout, _ := element.Timeout()
-		go makeRequest(element.Attributes["src"], ch, chErr, timeout)
+		go makeRequest(element.Url(), ch, chErr, timeout)
 	}
 
 	for _, element := range ssiElements {
 		select {
 		case res := <-ch:
+			debugf("SSI [%v] - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
 			element.SetupSuccess(res)
 		case err := <-chErr:
 			element.SetupFallback(err)
-			errorf("Error %q", element.Attributes["src"], err)
+			errorf("Error %q", element.Url(), err)
 		}
 	}
 
@@ -107,11 +110,8 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 
 func makeRequest(url string, ch chan<- []byte, chErr chan<- error, timeoutMs int) {
 	timeout := time.Duration(time.Duration(timeoutMs) * time.Millisecond)
-	timeStart := time.Now()
 	Client.Timeout = timeout
 	resp, err := Client.Get(url)
-
-	debugf("Request to %q took %q", url, time.Since(timeStart))
 
 	if err != nil {
 		chErr <- ErrRequest

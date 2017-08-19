@@ -40,6 +40,14 @@ func (s *SSIElement) GetTimeoutTag() error {
 	return nil
 }
 
+func (s *SSIElement) Url() string {
+	return s.Attributes["src"]
+}
+
+func (s *SSIElement) Name() string {
+	return s.Attributes["name"]
+}
+
 func (s *SSIElement) replaceWithDefaultHTML() error {
 	s.Element.Find(ssiErrorTag + "," + ssiTimeoutTag).Remove()
 
