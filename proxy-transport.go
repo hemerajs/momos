@@ -74,17 +74,17 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 
 	for _, element := range ssiElements {
 		timeout, _ := element.Timeout()
-		go makeRequest(element.Url(), ch, chErr, timeout)
+		go makeRequest(element.Name(), element.Url(), ch, chErr, timeout)
 	}
 
 	for _, element := range ssiElements {
 		select {
 		case res := <-ch:
-			debugf("⚛ SSI [%v] - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
+			debugf("➫ SSI [%v] - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
 			element.SetupSuccess(res)
 		case err := <-chErr:
 			element.SetupFallback(err)
-			debugf("⚛ SSI [%v] - Request to %v error: %q", element.Name(), element.Url(), err)
+			debugf("➫ SSI [%v] - Request to %v error: %q", element.Name(), element.Url(), err)
 		}
 	}
 
@@ -107,7 +107,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	return resp, nil
 }
 
-func makeRequest(url string, ch chan<- []byte, chErr chan<- error, timeoutMs int) {
+func makeRequest(name string, url string, ch chan<- []byte, chErr chan<- error, timeoutMs int) {
 	timeout := time.Duration(time.Duration(timeoutMs) * time.Millisecond)
 	Client.Timeout = timeout
 	resp, err := Client.Get(url)
@@ -122,6 +122,13 @@ func makeRequest(url string, ch chan<- []byte, chErr chan<- error, timeoutMs int
 			chErr <- ErrInvalidContentType
 		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
 			body, _ := ioutil.ReadAll(resp.Body)
+
+			if resp.Header.Get("X-From-Cache") == "1" {
+				debugf("★ SSI [%v] - Response was cached", name)
+			} else {
+				debugf("☆ SSI [%v] - Response was refreshed", name)
+			}
+
 			resp.Body.Close()
 			ch <- body
 		}
