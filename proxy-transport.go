@@ -127,8 +127,6 @@ func makeRequest(name string, url string, ch chan<- []byte, chErr chan<- error, 
 
 			if resp.Header.Get("X-From-Cache") == "1" {
 				debugf("★ Fragment (%v) - Response was cached", name)
-			} else {
-				debugf("☆ Fragment (%v) - Response was refreshed", name)
 			}
 
 			resp.Body.Close()
