@@ -16,5 +16,5 @@ func debugf(format string, args ...interface{}) {
 }
 
 func errorf(format string, args ...interface{}) {
-	log.Printf(ansiRed+"✗ "+format+ansiReset, args)
+	log.Printf("✗ "+format, args)
 }

@@ -38,6 +38,12 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		return nil, err
 	}
 
+	// Only html files are scanned
+	contentType := resp.Header.Get("Content-Type")
+	if !strings.HasPrefix(contentType, "text/html") {
+		return resp, nil
+	}
+
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 
 	if err != nil {
@@ -76,6 +82,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 			element.SetupSuccess(res)
 		case err := <-chErr:
 			element.SetupFallback(err)
+			errorf("Error %q", element.Attributes["src"], err)
 		}
 	}
 
@@ -112,7 +119,7 @@ func makeRequest(url string, ch chan<- []byte, chErr chan<- error, timeoutMs int
 		chErr <- ErrTimeout
 	} else {
 		contentType := resp.Header.Get("Content-Type")
-		if !strings.Contains(contentType, "text/html") {
+		if !strings.HasPrefix(contentType, "text/html") {
 			chErr <- ErrInvalidContentType
 		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
 			body, _ := ioutil.ReadAll(resp.Body)
