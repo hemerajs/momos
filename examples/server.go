@@ -1,7 +1,9 @@
+// +build ignore
 package main
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/hemerajs/momos"
 )
@@ -17,6 +19,7 @@ func backendHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ssiHandler(w http.ResponseWriter, r *http.Request) {
+	// time.Sleep(1000 * time.Millisecond)
 	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
 	http.ServeFile(w, r, "examples/ssi.html")
@@ -49,7 +52,11 @@ func main() {
 	// create momos instance and pass the url to your service
 	p := momos.New("http://127.0.0.1:8080")
 	// create proxy server
-	server := &http.Server{Addr: "127.0.0.1:9090"}
+	server := &http.Server{
+		Addr:         "127.0.0.1:9090",
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
 	// assign roundTrip handler
 	server.Handler = p.Handler
 	// start server

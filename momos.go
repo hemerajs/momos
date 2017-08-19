@@ -20,6 +20,7 @@ type Proxy struct {
 
 func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
+		// https://github.com/lox/httpcache
 		debugf("▨ PreResponse (%v) - Cache is %v", req.Host+req.URL.String(), res.Header().Get("X-Cache"))
 		h.ServeHTTP(res, req)
 	}

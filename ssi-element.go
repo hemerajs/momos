@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html/template"
 	"strconv"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -18,6 +19,7 @@ type TemplateContext struct {
 	DateLocal string
 	Date      string
 	RequestId string
+	Name      string
 }
 
 type SSIAttributes map[string]string
@@ -31,13 +33,16 @@ type SSIElement struct {
 	Attributes      SSIAttributes
 	Element         *goquery.Selection
 	templateContext TemplateContext
+	name            string
+	src             string
+	timeout         time.Duration
 	hasTemplate     bool
 }
 
 func (s *SSIElement) GetErrorTag() error {
 	node := s.Element.Find(ssiErrorTag)
 	s.HasErrorTag = node.Length() > 0
-	s.timeoutTag = node
+	s.errorTag = node
 
 	return nil
 }
@@ -45,32 +50,41 @@ func (s *SSIElement) GetErrorTag() error {
 func (s *SSIElement) GetTimeoutTag() error {
 	node := s.Element.Find(ssiTimeoutTag)
 	s.HasTimeoutTag = node.Length() > 0
-	s.errorTag = node
+	s.timeoutTag = node
 
 	return nil
 }
 
-func (s *SSIElement) Url() string {
-	return s.Attributes["src"]
+func (s *SSIElement) SetName(name string) error {
+	s.name = name
+	return nil
 }
 
-func (s *SSIElement) Name() string {
-	return s.Attributes["name"]
+func (s *SSIElement) SetSrc(src string) error {
+	s.src = src
+	return nil
 }
 
-func (s *SSIElement) HasHemplate() bool {
-	return s.Attributes["template"] == "true"
+func (s *SSIElement) SetTemplate(h string) error {
+	if h == "false" {
+		s.hasTemplate = false
+	} else {
+		s.hasTemplate = true
+	}
+	return nil
 }
 
-func (s *SSIElement) Timeout() (int, error) {
-	timeoutMs, err := strconv.Atoi(s.Attributes["timeout"])
+func (s *SSIElement) SetTimeout(t string) error {
+	timeoutMs, err := strconv.Atoi(t)
 
 	if err != nil {
 		errorf("illegal value %q in timeout attribute", timeoutMs)
-		return timeoutMs, nil
+		return err
 	}
 
-	return defaultTimeout, err
+	s.timeout = time.Duration(time.Duration(timeoutMs) * time.Millisecond)
+
+	return nil
 }
 
 func (s *SSIElement) replaceWithDefaultHTML() error {
@@ -94,7 +108,6 @@ func (s *SSIElement) replaceWithDefaultHTML() error {
 func (s *SSIElement) replaceWithErrorHTML() error {
 	if s.HasErrorTag {
 		html, err := s.errorTag.Html()
-
 		if err == nil {
 			err := s.ReplaceWithHtml(html)
 			if err != nil {
@@ -112,9 +125,9 @@ func (s *SSIElement) replaceWithErrorHTML() error {
 }
 
 func (s *SSIElement) ReplaceWithHtml(html string) error {
-	if s.HasHemplate() {
+	if s.hasTemplate {
 		var doc bytes.Buffer
-		tpl, err := template.New(s.Name()).Parse(html)
+		tpl, err := template.New(s.name).Parse(html)
 
 		if err != nil {
 			errorf("template parsing error %q", err)

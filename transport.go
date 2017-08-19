@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -21,7 +20,13 @@ var (
 	ErrInvalidContentType = errors.New("Invalid content type")
 )
 
-var Client = &http.Client{Transport: clientCache.NewMemoryCacheTransport()}
+var cache = clientCache.NewMemoryCacheTransport()
+
+type ssiResult struct {
+	name    string
+	payload []byte
+	error   error
+}
 
 type proxyTransport struct {
 	http.RoundTripper
@@ -51,46 +56,50 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		return nil, err
 	}
 
-	ssiElements := []SSIElement{}
+	ssiCount := 0
+	ssiElements := map[string]SSIElement{}
 
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
 		se := SSIElement{Element: element}
-		se.templateContext = TemplateContext{
-			DateLocal: time.Now().Local().Format("2006-01-02"),
-			Date:      time.Now().Format(time.RFC3339),
-			RequestId: req.Header.Get("X-Request-Id"),
-		}
-		se.Attributes = SSIAttributes{
-			"timeout":  element.AttrOr("timeout", "2000"),
-			"src":      element.AttrOr("src", ""),
-			"name":     element.AttrOr("name", ""),
-			"template": element.AttrOr("template", "false"),
-		}
+
+		se.SetTimeout(element.AttrOr("timeout", "2000"))
+		se.SetSrc(element.AttrOr("src", ""))
+		se.SetName(element.AttrOr("name", ""))
+		se.SetTemplate(element.AttrOr("template", "false"))
 
 		se.GetErrorTag()
 		se.GetTimeoutTag()
 
-		ssiElements = append(ssiElements, se)
+		se.templateContext = TemplateContext{
+			DateLocal: time.Now().Local().Format("2006-01-02"),
+			Date:      time.Now().Format(time.RFC3339),
+			RequestId: req.Header.Get("X-Request-Id"),
+			Name:      se.name,
+		}
+
+		ssiElements[se.name] = se
+		ssiCount++
 	})
 
-	ch := make(chan []byte)
-	chErr := make(chan error)
+	ch := make(chan ssiResult)
 
 	timeStartRequest := time.Now()
 
-	for _, element := range ssiElements {
-		timeout, _ := element.Timeout()
-		go makeRequest(element.Name(), element.Url(), ch, chErr, timeout)
+	for _, el := range ssiElements {
+		go makeRequest(el.name, el.src, ch, el.timeout)
 	}
 
-	for _, element := range ssiElements {
+	for i := 0; i < ssiCount; i++ {
 		select {
 		case res := <-ch:
-			debugf("➫ Fragment (%v) - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
-			element.SetupSuccess(res)
-		case err := <-chErr:
-			element.SetupFallback(err)
-			debugf("➫ Fragment (%v) - Request to %v error: %q", element.Name(), element.Url(), err)
+			el := ssiElements[res.name]
+			if res.error == nil {
+				debugf("➫ Fragment (%v) - Request to %v took %v", el.name, el.src, time.Since(timeStartRequest))
+				el.SetupSuccess(res.payload)
+			} else {
+				el.SetupFallback(res.error)
+				debugf("➫ Fragment (%v) - Request to %v error: %q", el.name, el.src, res.error)
+			}
 		}
 	}
 
@@ -113,30 +122,35 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	return resp, nil
 }
 
-func makeRequest(name string, url string, ch chan<- []byte, chErr chan<- error, timeoutMs int) {
-	timeout := time.Duration(time.Duration(timeoutMs) * time.Millisecond)
-	Client.Timeout = timeout
+func makeRequest(name string, url string, ch chan<- ssiResult, timeout time.Duration) {
+	// @TODO don't create a new client per request
+	var Client = &http.Client{
+		Transport: cache,
+		Timeout:   timeout,
+	}
+
 	resp, err := Client.Get(url)
 
 	if err != nil {
-		chErr <- ErrRequest
-	} else if err, ok := err.(net.Error); ok && err.Timeout() {
-		chErr <- ErrTimeout
+		ch <- ssiResult{name: name, error: err}
 	} else {
 		contentType := resp.Header.Get("Content-Type")
 		if !strings.HasPrefix(contentType, "text/html") {
-			chErr <- ErrInvalidContentType
+			ch <- ssiResult{name: name, error: ErrInvalidContentType}
 		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
 			body, _ := ioutil.ReadAll(resp.Body)
 			defer resp.Body.Close()
 
+			// https://github.com/gregjones/httpcache
 			if resp.Header.Get("X-From-Cache") == "1" {
 				debugf("★ Fragment (%v) - Response was cached", name)
 			} else {
 				debugf("☆ Fragment (%v) - Response was refreshed", name)
 			}
 
-			ch <- body
+			ch <- ssiResult{name: name, payload: body}
+		} else {
+			ch <- ssiResult{name: name, error: ErrInvalidStatusCode}
 		}
 	}
 
