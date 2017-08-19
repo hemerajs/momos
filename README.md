@@ -2,6 +2,9 @@
     <img src="logo.png" alt="Momos logo" /><br /><br />
 </p>
 
+[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.org/hemerajs/momos.svg?branch=master)](http://travis-ci.org/hemerajs/momos)
+
 Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. No html comments or complicate configurations. This is proof-of-concept. 
 
 - **Cache:** Requests are cached with RFC7234 with support for memory and file storage.
