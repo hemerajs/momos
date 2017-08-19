@@ -58,7 +58,6 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		se.Attributes = SSIAttributes{
 			"timeout": element.AttrOr("timeout", "2000"),
 			"src":     element.AttrOr("src", ""),
-			"cache":   element.AttrOr("cache", ""),
 			"name":    element.AttrOr("name", ""),
 		}
 

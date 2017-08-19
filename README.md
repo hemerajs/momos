@@ -33,7 +33,6 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 
   <ssi
     name="basket"
-    cache="5000"
     timeout="2000"
     src="http://starptech.de">
 

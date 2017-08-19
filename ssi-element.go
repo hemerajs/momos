@@ -48,6 +48,17 @@ func (s *SSIElement) Name() string {
 	return s.Attributes["name"]
 }
 
+func (s *SSIElement) Timeout() (int, error) {
+	timeoutMs, err := strconv.Atoi(s.Attributes["timeout"])
+
+	if err != nil {
+		errorf("illegal value %q in timeout attribute", timeoutMs)
+		return timeoutMs, nil
+	}
+
+	return defaultTimeout, err
+}
+
 func (s *SSIElement) replaceWithDefaultHTML() error {
 	s.Element.Find(ssiErrorTag + "," + ssiTimeoutTag).Remove()
 
@@ -92,17 +103,6 @@ func (s *SSIElement) replaceWithTimeoutHTML() error {
 	}
 
 	return nil
-}
-
-func (s *SSIElement) Timeout() (int, error) {
-	timeoutMs, err := strconv.Atoi(s.Attributes["timeout"])
-
-	if err != nil {
-		errorf("illegal value %q in timeout attribute", timeoutMs)
-		return timeoutMs, nil
-	}
-
-	return defaultTimeout, err
 }
 
 func (s *SSIElement) SetupSuccess(body []byte) {
