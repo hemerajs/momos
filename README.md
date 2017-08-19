@@ -36,16 +36,15 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
     timeout="2000"
     src="http://starptech.de">
 
-    <!-- a) Used when no error or timeout field was set -->
+    <!-- Used when no error or timeout field was set default empty space -->
     Default content!
     
-    <!-- b) Timeout errors based on the timeout duration-->
+    <!-- Timeout errors based on the timeout duration-->
     <ssi-timeout>
     <span>Please try it again!</span>
     </ssi-timeout>
     
-    <!-- c) statusCode > 199 && statusCode < 300 -->
-    <!-- d) Any other error -->
+    <!-- None 2xx status code or any other error -->
     <ssi-error>
     <span>Please call the support!</span>
     </ssi-error>
