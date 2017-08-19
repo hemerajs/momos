@@ -29,6 +29,8 @@ type proxyTransport struct {
 
 func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 
+	debugf("☇ Start processing request %q", req.URL)
+
 	timeStart := time.Now()
 
 	// get the response of an given request
@@ -102,7 +104,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	resp.ContentLength = int64(len(content)) // update content length
 	resp.Header.Set("Content-Length", strconv.Itoa(len(content)))
 
-	debugf("✓ Process Complete Request %q took %q", req.URL, time.Since(timeStart))
+	debugf("✓ Processing complete %q took %q", req.URL, time.Since(timeStart))
 
 	return resp, nil
 }
