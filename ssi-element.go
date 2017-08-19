@@ -31,6 +31,7 @@ type SSIElement struct {
 	Attributes      SSIAttributes
 	Element         *goquery.Selection
 	templateContext TemplateContext
+	hasTemplate     bool
 }
 
 func (s *SSIElement) GetErrorTag() error {
@@ -55,6 +56,10 @@ func (s *SSIElement) Url() string {
 
 func (s *SSIElement) Name() string {
 	return s.Attributes["name"]
+}
+
+func (s *SSIElement) HasHemplate() bool {
+	return s.Attributes["template"] == "true"
 }
 
 func (s *SSIElement) Timeout() (int, error) {
@@ -107,22 +112,26 @@ func (s *SSIElement) replaceWithErrorHTML() error {
 }
 
 func (s *SSIElement) ReplaceWithHtml(html string) error {
-	var doc bytes.Buffer
-	tpl, err := template.New(s.Name()).Parse(html)
+	if s.HasHemplate() {
+		var doc bytes.Buffer
+		tpl, err := template.New(s.Name()).Parse(html)
 
-	if err != nil {
-		errorf("template parsing error %q", err)
-		return err
+		if err != nil {
+			errorf("template parsing error %q", err)
+			return err
+		}
+
+		err = tpl.Execute(&doc, s.templateContext)
+
+		if err != nil {
+			errorf("Error during template rendering %q", err)
+			return err
+		}
+
+		s.Element.ReplaceWithHtml(doc.String())
+	} else {
+		s.Element.ReplaceWithHtml(html)
 	}
-
-	err = tpl.Execute(&doc, s.templateContext)
-
-	if err != nil {
-		errorf("Error during template rendering %q", err)
-		return err
-	}
-
-	s.Element.ReplaceWithHtml(doc.String())
 
 	return nil
 }
