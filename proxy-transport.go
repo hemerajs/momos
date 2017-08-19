@@ -80,11 +80,11 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	for _, element := range ssiElements {
 		select {
 		case res := <-ch:
-			debugf("SSI [%v] - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
+			debugf("⚛ SSI [%v] - Request to %v took %v", element.Name(), element.Url(), time.Since(timeStartRequest))
 			element.SetupSuccess(res)
 		case err := <-chErr:
 			element.SetupFallback(err)
-			debugf("SSI [%v] - Request to %v error: %q", element.Name(), element.Url(), err)
+			debugf("⚛ SSI [%v] - Request to %v error: %q", element.Name(), element.Url(), err)
 		}
 	}
 
@@ -102,7 +102,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	resp.ContentLength = int64(len(content)) // update content length
 	resp.Header.Set("Content-Length", strconv.Itoa(len(content)))
 
-	debugf("Process Complete Request %q took %q", req.URL, time.Since(timeStart))
+	debugf("✓ Process Complete Request %q took %q", req.URL, time.Since(timeStart))
 
 	return resp, nil
 }
