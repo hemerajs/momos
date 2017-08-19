@@ -89,6 +89,7 @@ Requests are cached for 10 seconds `max-age=10`
 - [X] Use single http client and create request with http.NewRequest
 - [X] Start multiple requests concurrently with go channels
 - [ ] Collect metrics
+- [ ] Write tests
 
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
