@@ -60,7 +60,16 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 ```
 $ go get ./...
 $ go run examples/server.go
-$ Browser to http://localhost:9090/
+$ go run examples/client.go
+```
+### Expected output
+```
+2017/08/19 13:04:59 ⚛ SSI [basket] - Request to http://localhost:8081 took 0s
+2017/08/19 13:04:59 ⚛ SSI [basket2] - Request to http://localhost:8081 took 1ms
+2017/08/19 13:04:59 ⚛ SSI [basket3] - Request to http://localhost:8081 took 1ms
+2017/08/19 13:04:59 ⚛ SSI [basket4] - Request to http://localhost:8081 took 1ms
+2017/08/19 13:04:59 ⚛ SSI [basket5] - Request to http://localhost:8081 took 1ms
+2017/08/19 13:04:59 ✓ Process Complete Request "http://127.0.0.1:8080/llamas" took "1ms"
 ```
 
 
