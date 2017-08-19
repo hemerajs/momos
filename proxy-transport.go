@@ -84,7 +84,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 			element.SetupSuccess(res)
 		case err := <-chErr:
 			element.SetupFallback(err)
-			errorf("Error %q", element.Url(), err)
+			debugf("SSI [%v] - Request to %v error: %q", element.Name(), element.Url(), err)
 		}
 	}
 
