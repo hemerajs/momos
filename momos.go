@@ -12,11 +12,10 @@ import (
 var ServerLogging = false
 
 type Proxy struct {
-	reverseProxy *httputil.ReverseProxy
-	proxyURL     string
-	Server       *http.Server
-	handler      *httpcache.Handler
-	cache        httpcache.Cache
+	ReverseProxy *httputil.ReverseProxy
+	ProxyURL     string
+	Handler      *httpcache.Handler
+	Cache        httpcache.Cache
 }
 
 func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
@@ -26,7 +25,7 @@ func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
 	}
 }
 
-func New(proxyUrl, targetUrl string) *Proxy {
+func New(targetUrl string) *Proxy {
 	target, tErr := url.Parse(targetUrl)
 
 	if tErr != nil {
@@ -37,30 +36,17 @@ func New(proxyUrl, targetUrl string) *Proxy {
 	httpcache.DebugLogging = ServerLogging
 
 	p := &Proxy{}
-	p.proxyURL = proxyUrl
-	p.reverseProxy = httputil.NewSingleHostReverseProxy(target)
-	p.reverseProxy.Transport = &proxyTransport{http.DefaultTransport}
+	p.ReverseProxy = httputil.NewSingleHostReverseProxy(target)
+	p.ReverseProxy.Transport = &proxyTransport{http.DefaultTransport}
 
-	p.cache = httpcache.NewMemoryCache()
-	p.handler = httpcache.NewHandler(p.cache, PreCacheResponseHandler(p.reverseProxy))
-	p.handler.Shared = true
+	p.Cache = httpcache.NewMemoryCache()
+	p.Handler = httpcache.NewHandler(p.Cache, PreCacheResponseHandler(p.ReverseProxy))
+	p.Handler.Shared = true
 
-	respLogger := httplog.NewResponseLogger(p.handler)
+	respLogger := httplog.NewResponseLogger(p.Handler)
 	respLogger.DumpRequests = true
 	respLogger.DumpResponses = true
 	respLogger.DumpErrors = true
 
 	return p
-}
-
-// Start starts the server and listen on the given port
-func (p *Proxy) Start() error {
-	p.Server = &http.Server{Addr: p.proxyURL}
-	p.Server.Handler = p.handler
-	return p.Server.ListenAndServe()
-}
-
-// Close close the server
-func (p *Proxy) Close() error {
-	return p.Server.Close()
 }

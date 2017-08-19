@@ -30,10 +30,8 @@ type proxyTransport struct {
 func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 
 	debugf("☇ Start processing request %q", req.URL)
-
 	timeStart := time.Now()
 
-	// get the response of an given request
 	resp, err = t.RoundTripper.RoundTrip(req)
 	if err != nil {
 		errorf("could not create RoundTripper from %q", req.URL)
@@ -130,6 +128,7 @@ func makeRequest(name string, url string, ch chan<- []byte, chErr chan<- error, 
 			chErr <- ErrInvalidContentType
 		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
 			body, _ := ioutil.ReadAll(resp.Body)
+			defer resp.Body.Close()
 
 			if resp.Header.Get("X-From-Cache") == "1" {
 				debugf("★ Fragment (%v) - Response was cached", name)
@@ -137,7 +136,6 @@ func makeRequest(name string, url string, ch chan<- []byte, chErr chan<- error, 
 				debugf("☆ Fragment (%v) - Response was refreshed", name)
 			}
 
-			resp.Body.Close()
 			ch <- body
 		}
 	}

@@ -46,9 +46,8 @@ func main() {
 	momos.DebugLogging = true
 	momos.ServerLogging = false
 
-	p := momos.New("127.0.0.1:9090", "http://127.0.0.1:8080")
-	err := p.Start()
-	if err != nil {
-		panic(err)
-	}
+	p := momos.New("http://127.0.0.1:8080")
+	server := &http.Server{Addr: "127.0.0.1:9090"}
+	server.Handler = p.Handler
+	server.ListenAndServe()
 }
