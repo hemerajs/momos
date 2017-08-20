@@ -16,7 +16,6 @@ type Proxy struct {
 	ReverseProxy *httputil.ReverseProxy
 	ProxyURL     string
 	Handler      *httpcache.Handler
-	Cache        httpcache.Cache
 }
 
 // PreCacheResponseHandler is an http handler to log informations about the cache status
@@ -44,8 +43,8 @@ func New(targetUrl string) *Proxy {
 	p.ReverseProxy = httputil.NewSingleHostReverseProxy(target)
 	p.ReverseProxy.Transport = &proxyTransport{http.DefaultTransport}
 
-	p.Cache = httpcache.NewMemoryCache()
-	p.Handler = httpcache.NewHandler(p.Cache, PreCacheResponseHandler(p.ReverseProxy))
+	cache := httpcache.NewMemoryCache()
+	p.Handler = httpcache.NewHandler(cache, PreCacheResponseHandler(p.ReverseProxy))
 	p.Handler.Shared = true
 
 	return p
