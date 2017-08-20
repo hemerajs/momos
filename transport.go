@@ -36,12 +36,12 @@ type proxyTransport struct {
 
 func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err error) {
 
-	debugf("☇ Start processing request %q", req.URL)
+	Log.Debugf("start processing request %q", req.URL)
 	timeStart := time.Now()
 
 	resp, err = t.RoundTripper.RoundTrip(req)
 	if err != nil {
-		errorf("could not create RoundTripper from %q", req.URL)
+		Log.Errorf("could not create RoundTripper from %q", req.URL)
 		return nil, err
 	}
 
@@ -54,7 +54,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 
 	if err != nil {
-		errorf("illegal response body from %q", req.URL)
+		Log.Errorf("illegal response body from %q", req.URL)
 		return nil, err
 	}
 
@@ -96,11 +96,11 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		res := <-ch
 		el := ssiElements[res.name]
 		if res.error == nil {
-			debugf("➫ Fragment (%v) - Request to %v took %v", el.name, el.src, time.Since(timeStartRequest))
+			Log.Debugf("fragment (%v) - Request to %v took %v", el.name, el.src, time.Since(timeStartRequest))
 			el.SetupSuccess(res.payload)
 		} else {
 			el.SetupFallback(res.error)
-			debugf("➫ Fragment (%v) - Request to %v error: %q", el.name, el.src, res.error)
+			Log.Debugf("Fragment (%v) - Request to %v error: %q", el.name, el.src, res.error)
 		}
 	}
 
@@ -109,7 +109,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	htmlDoc, err := doc.Html()
 
 	if err != nil {
-		errorf("Could not get html from document %q", req.URL)
+		Log.Errorf("Could not get html from document %q", req.URL)
 		return nil, err
 	}
 
@@ -120,7 +120,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	resp.ContentLength = int64(len(content)) // update content length
 	resp.Header.Set("Content-Length", strconv.Itoa(len(content)))
 
-	debugf("✓ Processing complete %q took %q", req.URL, time.Since(timeStart))
+	Log.Debugf("Processing complete %q took %q", req.URL, time.Since(timeStart))
 
 	return resp, nil
 }
@@ -146,9 +146,9 @@ func makeRequest(name string, url string, ch chan<- ssiResult, timeout time.Dura
 
 			// https://github.com/gregjones/httpcache
 			if resp.Header.Get("X-From-Cache") == "1" {
-				debugf("★ Fragment (%v) - Response was cached", name)
+				Log.Debugf("Fragment (%v) - Response was cached", name)
 			} else {
-				debugf("☆ Fragment (%v) - Response was refreshed", name)
+				Log.Debugf("Fragment (%v) - Response was refreshed", name)
 			}
 
 			ch <- ssiResult{name: name, payload: body}

@@ -5,11 +5,13 @@ import (
 	"net/http/httputil"
 	"net/url"
 
+	"github.com/hemerajs/momos/logger"
 	"github.com/lox/httpcache"
 	"github.com/lox/httpcache/httplog"
 )
 
 var ServerLogging = false
+var Log = logger.NewStdLogger(true, true, true, true, false)
 
 type Proxy struct {
 	ReverseProxy *httputil.ReverseProxy
@@ -21,7 +23,7 @@ type Proxy struct {
 func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		// https://github.com/lox/httpcache
-		debugf("▨ PreResponse (%v) - Cache is %v", req.Host+req.URL.String(), res.Header().Get("X-Cache"))
+		Log.Debugf("PreResponse (%v) - Cache is %v", req.Host+req.URL.String(), res.Header().Get("X-Cache"))
 		h.ServeHTTP(res, req)
 	}
 }
@@ -30,7 +32,7 @@ func New(targetUrl string) *Proxy {
 	target, tErr := url.Parse(targetUrl)
 
 	if tErr != nil {
-		errorf("Invalid url: %v", targetUrl)
+		Log.Errorf("Invalid url: %v", targetUrl)
 		panic(tErr)
 	}
 

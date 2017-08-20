@@ -98,7 +98,7 @@ func (s *SSIElement) SetTimeout(t string) error {
 	timeoutMs, err := strconv.Atoi(t)
 
 	if err != nil {
-		errorf("illegal value %q in timeout attribute", timeoutMs)
+		Log.Errorf("illegal value %q in timeout attribute", timeoutMs)
 		return err
 	}
 
@@ -128,7 +128,7 @@ func removeDynamicIncludes(html string) (string, error) {
 	doc, err := goquery.NewDocumentFromReader(r)
 
 	if err != nil {
-		errorf("could not parse as html document")
+		Log.Errorf("could not parse as html document")
 		return "", err
 	}
 
@@ -137,7 +137,7 @@ func removeDynamicIncludes(html string) (string, error) {
 	html, err = doc.Html()
 
 	if err != nil {
-		errorf("could not get html from document")
+		Log.Errorf("could not get html from document")
 		return "", err
 	}
 
@@ -173,14 +173,14 @@ func (s *SSIElement) ReplaceWithHTML(html string) error {
 		tpl, err := template.New(s.name).Parse(html)
 
 		if err != nil {
-			errorf("template parsing error %q", err)
+			Log.Errorf("template parsing error %q", err)
 			return err
 		}
 
 		err = tpl.Execute(&doc, s.templateContext)
 
 		if err != nil {
-			errorf("error during template rendering %q", err)
+			Log.Errorf("error during template rendering %q", err)
 			return err
 		}
 
@@ -222,7 +222,7 @@ func (s *SSIElement) SetupSuccess(body []byte) error {
 		h, err := removeDynamicIncludes(html)
 
 		if err != nil {
-			errorf("could not remove dynamic includes from document %q", err)
+			Log.Errorf("could not remove dynamic includes from document %q", err)
 			return s.replaceWithErrorHTML()
 		}
 		return s.ReplaceWithHTML(h)

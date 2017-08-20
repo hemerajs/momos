@@ -81,19 +81,21 @@ $ go run examples/client.go
 ### Expected output
 Requests are cached for 10 seconds `max-age=10`
 ```
-2017/08/19 15:09:19 ▨ PreResponse (localhost:9090/favicon.ico) - Cache is SKIP
-2017/08/19 15:09:19 ☇ Start processing request "http://127.0.0.1:8080/favicon.ico"
-2017/08/19 15:09:19 ★ Fragment (basket5) - Response was cached
-2017/08/19 15:09:19 ➫ Fragment (basket) - Request to http://localhost:8081 took 0s
-2017/08/19 15:09:19 ★ Fragment (basket3) - Response was cached
-2017/08/19 15:09:19 ➫ Fragment (basket2) - Request to http://localhost:8081 took 0s
-2017/08/19 15:09:19 ★ Fragment (basket4) - Response was cached
-2017/08/19 15:09:19 ➫ Fragment (basket3) - Request to http://localhost:8081 took 0s
-2017/08/19 15:09:19 ★ Fragment (basket2) - Response was cached
-2017/08/19 15:09:19 ➫ Fragment (basket4) - Request to http://localhost:8081 took 0s
-2017/08/19 15:09:19 ★ Fragment (basket) - Response was cached
-2017/08/19 15:09:19 ➫ Fragment (basket5) - Request to http://localhost:8081 took 0s
-2017/08/19 15:09:19 ✓ Processing complete "http://127.0.0.1:8080/favicon.ico" took "1.9983ms"
+2017/08/20 12:13:39.034735 [DBG] PreResponse (localhost:9090/) - Cache is SKIP
+2017/08/20 12:13:39.034735 [DBG] start processing request "http://127.0.0.1:8080/"
+2017/08/20 12:13:39.077741 [DBG] PreResponse (localhost:9090/favicon.ico) - Cache is SKIP
+2017/08/20 12:13:39.078741 [DBG] start processing request "http://127.0.0.1:8080/favicon.ico"
+2017/08/20 12:13:39.080740 [DBG] Fragment (basket2) - Response was cached
+2017/08/20 12:13:39.080740 [DBG] Fragment (basket) - Response was cached
+2017/08/20 12:13:39.080740 [DBG] Fragment (basket3) - Response was cached
+2017/08/20 12:13:39.081740 [DBG] Fragment (basket4) - Response was cached
+2017/08/20 12:13:39.081740 [DBG] Fragment (basket5) - Response was cached
+2017/08/20 12:13:39.081740 [DBG] fragment (basket2) - Request to http://localhost:8081/a took 999.7µs
+2017/08/20 12:13:39.081740 [DBG] fragment (basket) - Request to http://localhost:8081 took 999.7µs
+2017/08/20 12:13:39.082740 [DBG] fragment (basket3) - Request to http://localhost:8081/b took 1.9994ms
+2017/08/20 12:13:39.082740 [DBG] fragment (basket4) - Request to http://localhost:8081/c took 1.9994ms
+2017/08/20 12:13:39.083741 [DBG] fragment (basket5) - Request to http://localhost:8081/d took 3.0001ms
+2017/08/20 12:13:39.084740 [DBG] Processing complete "http://127.0.0.1:8080/favicon.ico" took "4.9996ms"
 ```
 
 

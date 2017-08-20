@@ -47,9 +47,6 @@ func main() {
 		}
 	}()
 
-	momos.DebugLogging = true
-	momos.ServerLogging = false
-
 	// create momos instance and pass the url to your service
 	p := momos.New("http://127.0.0.1:8080")
 	// create proxy server
