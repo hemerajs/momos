@@ -20,10 +20,13 @@ type Proxy struct {
 	Cache        httpcache.Cache
 }
 
+// PreCacheResponseHandler is an http handler to log informations about the cache status
+// https://github.com/lox/httpcache
 func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
-		// https://github.com/lox/httpcache
-		Log.Debugf("PreResponse (%v) - Cache is %v", req.Host+req.URL.String(), res.Header().Get("X-Cache"))
+		url := req.Host + req.URL.String()
+		cacheHeader := res.Header().Get("X-Cache")
+		Log.Noticef("PreResponse url: %v, cache: %v", url, cacheHeader)
 		h.ServeHTTP(res, req)
 	}
 }
