@@ -31,20 +31,14 @@ func main() {
 	api := http.NewServeMux()
 	api.HandleFunc("/", backendHandler)
 	go func() {
-		err := http.ListenAndServe("127.0.0.1:8080", api)
-		if err != nil {
-			panic(err)
-		}
+		http.ListenAndServe("127.0.0.1:8080", api)
 	}()
 
 	// SSI Mock
 	ssi := http.NewServeMux()
 	ssi.HandleFunc("/", ssiHandler)
 	go func() {
-		err := http.ListenAndServe("127.0.0.1:8081", ssi)
-		if err != nil {
-			panic(err)
-		}
+		http.ListenAndServe("127.0.0.1:8081", ssi)
 	}()
 
 	// create momos instance and pass the url to your service
