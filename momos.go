@@ -7,7 +7,6 @@ import (
 
 	"github.com/hemerajs/momos/logger"
 	"github.com/lox/httpcache"
-	"github.com/lox/httpcache/httplog"
 )
 
 var ServerLogging = false
@@ -46,13 +45,8 @@ func New(targetUrl string) *Proxy {
 	p.ReverseProxy.Transport = &proxyTransport{http.DefaultTransport}
 
 	p.Cache = httpcache.NewMemoryCache()
-	p.Handler = httpcache.NewHandler(p.Cache, p.ReverseProxy)
+	p.Handler = httpcache.NewHandler(p.Cache, PreCacheResponseHandler(p.ReverseProxy))
 	p.Handler.Shared = true
-
-	respLogger := httplog.NewResponseLogger(p.Handler)
-	respLogger.DumpRequests = true
-	respLogger.DumpResponses = true
-	respLogger.DumpErrors = true
 
 	return p
 }
