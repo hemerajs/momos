@@ -27,8 +27,7 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 
 ## Advantages
 
-- Easy integration of html fragments of external services
-- Complemented the strategy of "HTML as first class citizen"
+- Easy integration of html fragments from external services
 - Share all layout html fragments to keep those snippets DRY
 - In highly distributed environments there is no other way to include dynamic components without using javascript
 
