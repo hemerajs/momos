@@ -100,7 +100,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 			el.SetupSuccess(res.payload)
 		} else {
 			el.SetupFallback(res.error)
-			Log.Debugf("Fragment (%v) - Request to %v error: %q", el.name, el.src, res.error)
+			Log.Errorf("Fragment (%v) - Request to %v \nerror: %q", el.name, el.src, res.error)
 		}
 	}
 
