@@ -9,10 +9,6 @@ import (
 	"github.com/hemerajs/momos"
 )
 
-type Page struct {
-	Title string
-}
-
 func backendHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Cache-Control", "max-age=10")
 	w.Header().Set("Content-Type", "text/html")
