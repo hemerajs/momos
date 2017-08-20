@@ -74,29 +74,3 @@ func TestSSIContent(t *testing.T) {
 	assert.Equal(t, res.StatusCode, 200, "should return 200")
 	assert.Equal(t, "<html><head></head><body><h1>hello</h1>\n\t</body></html>", bodyString)
 }
-
-func TestError(t *testing.T) {
-
-	ssiServer := httptest.NewServer(http.HandlerFunc(SSIInvalidStausCodeHandler))
-	ssiURL = ssiServer.URL
-	defer ssiServer.Close()
-
-	tsAPI := httptest.NewServer(http.HandlerFunc(APIHandler))
-	defer tsAPI.Close()
-
-	p := New(tsAPI.URL)
-
-	server := httptest.NewServer(p.Handler)
-	defer server.Close()
-
-	res, err := http.Get(server.URL)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	body, _ := ioutil.ReadAll(res.Body)
-	bodyString := string(body)
-
-	assert.Equal(t, res.StatusCode, 200, "should return 200")
-	assert.Equal(t, "<html><head></head><body>\n\t\t<span>Please call the support!</span>\n\t\t\n\t</body></html>", bodyString)
-}
