@@ -9,25 +9,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateElement(t *testing.T) {
+var html = "<ssi name=\"basket\" timeout=\"2000\" template=\"true\" src=\"http://localhost:8081\">Default content!<ssi-timeout><span>Please try it again!{{.DateLocal}}</span></ssi-timeout><ssi-error><span>Please call the support!</span></ssi-error></ssi>"
 
-	html := `
-	<ssi
-	name="basket"
-	timeout="2000"
-	template="true"
-	src="http://localhost:8081">
-		Default content!
-		
-		<ssi-timeout>
-		<span>Please try it again! {{.DateLocal}}</span>
-		</ssi-timeout>
-		
-		<ssi-error>
-		<span>Please call the support!</span>
-		</ssi-error>
-	</ssi>
-	`
+func TestCreateElement(t *testing.T) {
 
 	r := strings.NewReader(html)
 	doc, _ := goquery.NewDocumentFromReader(r)
@@ -48,24 +32,6 @@ func TestCreateElement(t *testing.T) {
 
 func TestReplaceWithDefaultHTML(t *testing.T) {
 
-	html := `
-	<ssi
-	name="basket"
-	timeout="2000"
-	template="true"
-	src="http://localhost:8081">
-		Default content!
-		
-		<ssi-timeout>
-		<span>Please try it again! {{.DateLocal}}</span>
-		</ssi-timeout>
-		
-		<ssi-error>
-		<span>Please call the support!</span>
-		</ssi-error>
-	</ssi>
-	`
-
 	r := strings.NewReader(html)
 	doc, _ := goquery.NewDocumentFromReader(r)
 	element := doc.Find("ssi")
@@ -84,28 +50,10 @@ func TestReplaceWithDefaultHTML(t *testing.T) {
 
 	se.replaceWithDefaultHTML()
 
-	html, _ = doc.Html()
-	assert.Equal(t, html, "<html><head></head><body>\n\t\tDefault content!\n\t\t\n\t\t\n\t\t\n\t\t\n\t\n\t</body></html>", "should contain the default html")
+	h, _ := doc.Html()
+	assert.Equal(t, h, "<html><head></head><body>Default content!</body></html>", "should contain the default html")
 }
 func TestReplaceWithErrorHTML(t *testing.T) {
-
-	html := `
-		<ssi
-		name="basket"
-		timeout="2000"
-		template="true"
-		src="http://localhost:8081">
-			Default content!
-			
-			<ssi-timeout>
-			<span>Please try it again! {{.DateLocal}}</span>
-			</ssi-timeout>
-			
-			<ssi-error>
-			<span>Please call the support!</span>
-			</ssi-error>
-		</ssi>
-		`
 
 	r := strings.NewReader(html)
 	doc, _ := goquery.NewDocumentFromReader(r)
@@ -129,29 +77,11 @@ func TestReplaceWithErrorHTML(t *testing.T) {
 
 	se.replaceWithErrorHTML()
 
-	html, _ = doc.Html()
-	assert.Equal(t, html, "<html><head></head><body>\n\t\t\t<span>Please call the support!</span>\n\t\t\t\n\t\t</body></html>", "should contain the default html")
+	h, _ := doc.Html()
+	assert.Equal(t, h, "<html><head></head><body><span>Please call the support!</span></body></html>", "should contain the default html")
 }
 
 func TestReplaceWithTimeoutHTML(t *testing.T) {
-
-	html := `
-	<ssi
-	name="basket"
-	timeout="2000"
-	template="true"
-	src="http://localhost:8081">
-		Default content!
-		
-		<ssi-timeout>
-		<span>Please try it again! {{.DateLocal}}</span>
-		</ssi-timeout>
-		
-		<ssi-error>
-		<span>Please call the support!</span>
-		</ssi-error>
-	</ssi>
-	`
 
 	r := strings.NewReader(html)
 	doc, _ := goquery.NewDocumentFromReader(r)
@@ -175,6 +105,6 @@ func TestReplaceWithTimeoutHTML(t *testing.T) {
 
 	se.replaceWithTimeoutHTML()
 
-	html, _ = doc.Html()
-	assert.Equal(t, html, "<html><head></head><body>\n\t\t<span>Please try it again! </span>\n\t\t\n\t</body></html>", "should contain the default html")
+	h, _ := doc.Html()
+	assert.Equal(t, h, "<html><head></head><body><span>Please try it again!</span></body></html>", "should contain the default html")
 }
