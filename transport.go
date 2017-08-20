@@ -58,6 +58,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		return nil, err
 	}
 
+	ssiCount := 0
 	ssiElements := map[string]SSIElement{}
 
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
@@ -79,6 +80,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		}
 
 		ssiElements[se.name] = se
+		ssiCount++
 	})
 
 	ch := make(chan ssiResult)
@@ -89,19 +91,19 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		go makeRequest(el.name, el.src, ch, el.timeout)
 	}
 
-	for {
-		select {
-		case res := <-ch:
-			el := ssiElements[res.name]
-			if res.error == nil {
-				debugf("➫ Fragment (%v) - Request to %v took %v", el.name, el.src, time.Since(timeStartRequest))
-				el.SetupSuccess(res.payload)
-			} else {
-				el.SetupFallback(res.error)
-				debugf("➫ Fragment (%v) - Request to %v error: %q", el.name, el.src, res.error)
-			}
+	for i := 0; i < ssiCount; i++ {
+		res := <-ch
+		el := ssiElements[res.name]
+		if res.error == nil {
+			debugf("➫ Fragment (%v) - Request to %v took %v", el.name, el.src, time.Since(timeStartRequest))
+			el.SetupSuccess(res.payload)
+		} else {
+			el.SetupFallback(res.error)
+			debugf("➫ Fragment (%v) - Request to %v error: %q", el.name, el.src, res.error)
 		}
 	}
+
+	close(ch)
 
 	htmlDoc, err := doc.Html()
 
@@ -153,5 +155,4 @@ func makeRequest(name string, url string, ch chan<- ssiResult, timeout time.Dura
 			ch <- ssiResult{name: name, error: ErrInvalidStatusCode}
 		}
 	}
-
 }
