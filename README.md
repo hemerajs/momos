@@ -66,10 +66,11 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 </html>
 ```
 
-- `name`     : The name of the fragment
-- `timeout`  : The maximum request timeout
-- `src`      : The url of the server-side-include
-- `template` : Enables template rendering via go templates
+- `name`      : The name of the fragment (default `unique-id`)
+- `timeout`   : The maximum request timeout (default `2000`)
+- `no-scripts`: Filter javascript and css includes from the fragment (default `true`)
+- `src`       : The url of the server-side-include
+- `template`  : Enables template rendering via go templates (default `false`)
 
 ## Run it
 

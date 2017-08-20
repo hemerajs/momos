@@ -68,6 +68,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		se.SetSrc(element.AttrOr("src", ""))
 		se.SetName(element.AttrOr("name", nuid.Next()))
 		se.SetTemplate(element.AttrOr("template", "false"))
+		se.SetFilterIncludes(element.AttrOr("no-scripts", "true"))
 
 		se.GetErrorTag()
 		se.GetTimeoutTag()
