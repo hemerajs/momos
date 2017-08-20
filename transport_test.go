@@ -36,7 +36,24 @@ func setup() {
 		w.Header().Add("Cache-Control", "max-age=10")
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, `
+			<html><head></head><body>
 			<ssi name="basket" timeout="200" template="true" src="`+s.server.URL+`/ssi">Default content!	
+			<ssi-timeout>
+			<span>Please try it again!</span>
+			</ssi-timeout>
+			<ssi-error>
+			<span>Please call the support!</span>
+			</ssi-error>
+		</ssi>
+		</body></html>
+		`)
+	}))
+
+	mux.HandleFunc("/api/ssi500", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Cache-Control", "max-age=10")
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprint(w, `
+			<ssi name="basket" timeout="200" template="true" src="`+s.server.URL+`/ssi500">Default content!	
 			<ssi-timeout>
 			<span>Please try it again!</span>
 			</ssi-timeout>
@@ -47,11 +64,26 @@ func setup() {
 		`)
 	}))
 
-	mux.HandleFunc("/api/ssi500", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/api/ssiTimeout", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Cache-Control", "max-age=10")
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, `
-			<ssi name="basket" timeout="200" template="true" src="`+s.server.URL+`/ssi500">Default content!	
+			<ssi name="basket" timeout="500" template="true" src="`+s.server.URL+`/ssiTimeout">Default content!	
+			<ssi-timeout>
+			<span>Please try it again!</span>
+			</ssi-timeout>
+			<ssi-error>
+			<span>Please call the support!</span>
+			</ssi-error>
+		</ssi>
+		`)
+	}))
+
+	mux.HandleFunc("/api/filterIncludes", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Cache-Control", "max-age=10")
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprint(w, `
+			<ssi name="basket" timeout="500" template="true" src="`+s.server.URL+`/withIncludes">Default content!	
 			<ssi-timeout>
 			<span>Please try it again!</span>
 			</ssi-timeout>
@@ -72,7 +104,7 @@ func setup() {
 	}))
 
 	mux.HandleFunc("/ssiTimeout", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(1000 * time.Millisecond)
+		time.Sleep(600 * time.Millisecond)
 		w.Header().Add("Cache-Control", "max-age=10")
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, `<h1>hello</h1>`)
@@ -83,6 +115,12 @@ func setup() {
 		w.Header().Add("Cache-Control", "max-age=10")
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, `<h1>hello</h1>`)
+	}))
+
+	mux.HandleFunc("/withIncludes", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Add("Cache-Control", "max-age=10")
+		w.Header().Set("Content-Type", "text/html")
+		fmt.Fprint(w, `<h1>hello</h1><script></script><link></link>`)
 	}))
 }
 
@@ -103,7 +141,7 @@ func TestSSIContent(t *testing.T) {
 	bodyString := string(body)
 
 	assert.Equal(t, res.StatusCode, 200, "should return 200")
-	assert.Equal(t, "<html><head></head><body><h1>hello</h1>\n\t\t</body></html>", bodyString)
+	assert.Equal(t, "<html><head></head><body>\n\t\t\t<h1>hello</h1>\n\t\t\n\t\t</body></html>", bodyString)
 }
 
 func TestError(t *testing.T) {
@@ -117,4 +155,30 @@ func TestError(t *testing.T) {
 
 	assert.Equal(t, res.StatusCode, 200, "should return 200")
 	assert.Equal(t, "<html><head></head><body>\n\t\t\t<span>Please call the support!</span>\n\t\t\t\n\t\t</body></html>", bodyString)
+}
+
+func TestTimeout(t *testing.T) {
+	res, err := s.client.Get(s.proxy.URL + "/api/ssiTimeout")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, _ := ioutil.ReadAll(res.Body)
+	bodyString := string(body)
+
+	assert.Equal(t, res.StatusCode, 200, "should return 200")
+	assert.Equal(t, "<html><head></head><body>\n\t\t\t<span>Please try it again!</span>\n\t\t\t\n\t\t</body></html>", bodyString)
+}
+
+func TestFilterIncludes(t *testing.T) {
+	res, err := s.client.Get(s.proxy.URL + "/api/filterIncludes")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	body, _ := ioutil.ReadAll(res.Body)
+	bodyString := string(body)
+
+	assert.Equal(t, res.StatusCode, 200, "should return 200")
+	assert.Equal(t, "<html><head></head><body><h1>hello</h1>\n\t\t</body></html>", bodyString)
 }

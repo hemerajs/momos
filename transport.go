@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -132,7 +133,9 @@ func makeRequest(name string, url string, ch chan<- ssiResult, timeout time.Dura
 
 	resp, err := Client.Get(url)
 
-	if err != nil {
+	if err, ok := err.(net.Error); ok && err.Timeout() {
+		ch <- ssiResult{name: name, error: ErrTimeout}
+	} else if err != nil {
 		ch <- ssiResult{name: name, error: err}
 	} else {
 		contentType := resp.Header.Get("Content-Type")

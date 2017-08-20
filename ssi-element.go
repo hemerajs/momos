@@ -241,6 +241,8 @@ func (s *SSIElement) SetupFallback(err error) error {
 		s.replaceWithErrorHTML()
 	case ErrTimeout:
 		s.replaceWithTimeoutHTML()
+	default:
+		s.replaceWithDefaultHTML()
 	}
 
 	return err
