@@ -29,6 +29,7 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 
 - Easy integration of html fragments from external services
 - Share all layout html fragments to keep those snippets DRY
+- Insert fragments in pages which are usually static (e.g landing) 
 - In highly distributed environments there is no other way to include dynamic components without using javascript
 
 
