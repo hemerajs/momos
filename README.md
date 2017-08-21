@@ -108,7 +108,6 @@ Requests are cached for 10 seconds `max-age=10`
 - [X] Use single http client and create request with http.NewRequest
 - [X] Start multiple requests concurrently with go channels
 - [ ] Collect metrics
-- [ ] Support for headers via `h-<header>=""` attribute
 - [X] Write tests
 
 ### References
