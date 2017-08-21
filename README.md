@@ -25,7 +25,7 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 > SSI (Server Side Includes) are directives that are placed in HTML pages, and evaluated on the server while the pages are being served. They let you add dynamically generated content to an existing HTML page, without having to serve the entire page via a CGI program, or other dynamic technology.
 [Reference](https://httpd.apache.org/docs/current/howto/ssi.html#page-header)
 
-## Advantages
+### Advantages
 
 - Easy integration of html fragments from external services
 - Share all layout html fragments to keep them [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
