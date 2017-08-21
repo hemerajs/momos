@@ -5,7 +5,7 @@
 [![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.org/hemerajs/momos.svg?branch=master)](http://travis-ci.org/hemerajs/momos)
 
-Momos - Reverse proxy to define server-side-includes via HTML5 and attributes. No html comments or complicate configurations. **This is a proof-of-concept.** 
+Momos - Reverse proxy to define server-side-includes with HTML5 and attributes. No html comments or complicate configurations. **This is a proof-of-concept.** 
 
 - **Cache:** Requests are cached with RFC7234 with support for memory and file storage.
 - **Lightweight:** Just ~300 lines of code. We trust only in well-tested packages.
