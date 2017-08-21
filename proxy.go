@@ -95,11 +95,11 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		res := <-ch
 		el := ssiElements[res.name]
 		if res.error == nil {
-			Log.Tracef("Call fragment %v, url: %v, duration: %v", el.name, el.src, time.Since(timeStartRequest))
+			Log.Tracef("Call fragment %q, url: %v, duration: %v", el.name, el.src, time.Since(timeStartRequest))
 			el.SetupSuccess(res.payload)
 		} else {
 			el.SetupFallback(res.error)
-			Log.Errorf("Fragment error %v, url: %v\n\nerror: %q", el.name, el.src, res.error)
+			Log.Errorf("Fragment error %q, url: %v\nerror: %q", el.name, el.src, res.error)
 		}
 	}
 
@@ -119,7 +119,7 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	resp.ContentLength = int64(len(content)) // update content length
 	resp.Header.Set("Content-Length", strconv.Itoa(len(content)))
 
-	Log.Tracef("Processing complete %q took %q", req.URL, time.Since(timeStart))
+	Log.Tracef("Processing complete %q duration: %v", req.URL, time.Since(timeStart))
 
 	return resp, nil
 }

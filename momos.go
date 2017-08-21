@@ -24,7 +24,7 @@ func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
 	return func(res http.ResponseWriter, req *http.Request) {
 		url := req.Host + req.URL.String()
 		cacheHeader := res.Header().Get("X-Cache")
-		Log.Noticef("PreResponse url: %v, cache: %v", url, cacheHeader)
+		Log.Noticef("PreResponse url: %q, cache: %q", url, cacheHeader)
 		h.ServeHTTP(res, req)
 	}
 }
