@@ -95,7 +95,7 @@ func setup() {
 	}))
 
 	p := New(s.server.URL)
-	s.proxy = httptest.NewServer(p.Handler)
+	s.proxy = httptest.NewServer(p.ReverseProxy)
 
 	mux.HandleFunc("/ssi", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Cache-Control", "max-age=10")

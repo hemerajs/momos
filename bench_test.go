@@ -38,7 +38,7 @@ func BenchmarkCachingFiles(b *testing.B) {
 	}))
 
 	p := New(server.URL)
-	proxy := httptest.NewServer(p.Handler)
+	proxy := httptest.NewServer(p.ReverseProxy)
 	defer proxy.Close()
 
 	for n := 0; n < b.N; n++ {

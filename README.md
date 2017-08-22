@@ -83,26 +83,31 @@ $ go run examples/client.go
 ### Expected output
 Requests are cached for 10 seconds `max-age=10`
 ```
-2017/08/20 16:34:41.162786 [INF] PreResponse url: localhost:9090/, cache: SKIP
-2017/08/20 16:34:41.196786 [INF] PreResponse url: localhost:9090/favicon.ico, cache: SKIP
-2017/08/20 16:34:41.198786 [INF] Fragment "basket" was cached
-2017/08/20 16:34:41.199786 [TRC] Call fragment basket, url: http://localhost:8081, duration: 1.0001ms
-2017/08/20 16:34:41.198786 [INF] Fragment "basket4" was cached
-2017/08/20 16:34:41.198786 [INF] Fragment "basket5" was cached
-2017/08/20 16:34:41.199786 [INF] Fragment "basket2" was cached
-2017/08/20 16:34:41.198786 [INF] Fragment "basket3" was cached
-2017/08/20 16:34:41.199786 [TRC] Call fragment basket4, url: http://localhost:8081/c, duration: 1.0001ms
-2017/08/20 16:34:41.200785 [TRC] Call fragment basket5, url: http://localhost:8081/d, duration: 1.9995ms
-2017/08/20 16:34:41.202787 [TRC] Call fragment basket2, url: http://localhost:8081/a, duration: 4.0014ms
-2017/08/20 16:34:41.203787 [TRC] Call fragment basket3, url: http://localhost:8081/b, duration: 5.0014ms
-2017/08/20 16:34:41.204786 [TRC] Processing complete "http://127.0.0.1:8080/favicon.ico" took "8ms"
+__  ___
+/  |/  /__  __ _  ___  ___
+/ /|_/ / _ \/  ' \/ _ \(_-<
+/_/  /_/\___/_/_/_/\___/___/ 1.0.0
+High performance, reverse proxy for advanced SSI
+2017/08/22 20:10:48.367828 [INF] Fragment "basket3" was cached
+2017/08/22 20:10:48.367828 [INF] Fragment "basket4" was cached
+2017/08/22 20:10:48.367828 [INF] Fragment "basket5" was cached
+2017/08/22 20:10:48.367828 [INF] Fragment "basket2" was cached
+2017/08/22 20:10:48.367828 [INF] Fragment "basket" was cached
+2017/08/22 20:10:48.367828 [TRC] Call fragment basket3, url: http://localhost:8081/b, duration: 999.5µs
+2017/08/22 20:10:48.367828 [TRC] Call fragment basket4, url: http://localhost:8081/c, duration: 999.5µs
+2017/08/22 20:10:48.367828 [TRC] Call fragment basket5, url: http://localhost:8081/d, duration: 999.5µs
+2017/08/22 20:10:48.367828 [TRC] Call fragment basket2, url: http://localhost:8081/a, duration: 999.5µs
+2017/08/22 20:10:48.367828 [TRC] Call fragment basket, url: https://google.de, duration: 999.5µs
+2017/08/22 20:10:48.368827 [TRC] Processing complete "http://127.0.0.1:8080/favicon.ico" took "1.9983ms"
 ```
+
+### Run in production
+Momos is no replacement for a reverse proxy like Nginx or Apache. Only the calls to the SSI Services are cached.
 
 
 ## TODO
 - [X] Use the net/http package to fetch the SSI Content
 - [X] Use [goquery](https://github.com/PuerkitoBio/goquery) to parse a web component
-- [X] Use [httpcache](https://github.com/lox/httpcache) to provides an rfc7234 compliant caching
 - [X] Use [httpcache](https://github.com/gregjones/httpcache) to provides an rfc7234 compliant client caching for SSI requests
 - [ ] Generate great debug informations about the structure of your page
 - [X] Use single http client and create request with http.NewRequest
@@ -113,5 +118,6 @@ Requests are cached for 10 seconds `max-age=10`
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
 - [Apache SSI](https://httpd.apache.org/docs/current/howto/ssi.html#page-header)
+
 ### Credits
 Icon made by [author](https://www.flaticon.com/authors/dinosoftlabs) from www.flaticon.com

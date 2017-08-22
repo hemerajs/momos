@@ -4,7 +4,6 @@ package main
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/hemerajs/momos"
 )
@@ -40,13 +39,5 @@ func main() {
 	// create momos instance and pass the url to your service
 	p := momos.New("http://127.0.0.1:8080")
 	// create proxy server
-	server := &http.Server{
-		Addr:         "127.0.0.1:9090",
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-	}
-	// assign roundTrip handler
-	server.Handler = p.Handler
-	// start server
-	server.ListenAndServe()
+	p.Start("127.0.0.1:9090")
 }

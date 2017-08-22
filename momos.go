@@ -1,12 +1,26 @@
 package momos
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
+	"time"
 
 	"github.com/hemerajs/momos/logger"
 	"github.com/lox/httpcache"
+)
+
+const (
+	version = "1.0.0"
+	website = "https://github.com/hemerajs/momos"
+	banner  = `
+__  ___             
+/  |/  /__  __ _  ___  ___
+/ /|_/ / _ \/  ' \/ _ \(_-<
+/_/  /_/\___/_/_/_/\___/___/ %s
+High performance, reverse proxy for advanced SSI										
+`
 )
 
 var ServerLogging = false
@@ -14,19 +28,9 @@ var Log = logger.NewStdLogger(true, true, true, true, false)
 
 type Proxy struct {
 	ReverseProxy *httputil.ReverseProxy
+	server       *http.Server
 	ProxyURL     string
 	Handler      *httpcache.Handler
-}
-
-// PreCacheResponseHandler is an http handler to log informations about the cache status
-// https://github.com/lox/httpcache
-func PreCacheResponseHandler(h http.Handler) http.HandlerFunc {
-	return func(res http.ResponseWriter, req *http.Request) {
-		url := req.Host + req.URL.String()
-		cacheHeader := res.Header().Get("X-Cache")
-		Log.Noticef("PreResponse url: %q, cache: %q", url, cacheHeader)
-		h.ServeHTTP(res, req)
-	}
 }
 
 func New(targetUrl string) *Proxy {
@@ -43,9 +47,23 @@ func New(targetUrl string) *Proxy {
 	p.ReverseProxy = httputil.NewSingleHostReverseProxy(target)
 	p.ReverseProxy.Transport = &proxyTransport{http.DefaultTransport}
 
-	cache := httpcache.NewMemoryCache()
-	p.Handler = httpcache.NewHandler(cache, PreCacheResponseHandler(p.ReverseProxy))
-	p.Handler.Shared = true
-
 	return p
+}
+
+func (p *Proxy) Start(addr string) error {
+	// create proxy server
+	server := &http.Server{
+		Addr:         addr,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+	}
+
+	p.server = server
+	// assign roundTrip handler
+	p.server.Handler = p.ReverseProxy
+
+	fmt.Printf(banner, version)
+
+	// start server
+	return server.ListenAndServe()
 }
