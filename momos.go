@@ -41,8 +41,6 @@ func New(targetUrl string) *Proxy {
 		panic(tErr)
 	}
 
-	httpcache.DebugLogging = ServerLogging
-
 	p := &Proxy{}
 	p.ReverseProxy = httputil.NewSingleHostReverseProxy(target)
 	p.ReverseProxy.Transport = &proxyTransport{http.DefaultTransport}
