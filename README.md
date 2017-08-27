@@ -19,7 +19,7 @@ Momos - Reverse proxy to define server-side-includes with HTML5 and attributes. 
 - **Operational**: Easy to start and maintain. Single binary.
 
 ## Why you don't use Nginx?
-Good point. Nginx is a great proxy and although it already provides robust SSI directives I would like to see a solution which don't require a restart or reload of the proxy when parameters has to be changed. The transition between defining SSI fragments and configure them should be smooth for any kind of developer. Momos should provide a high performance proxy with advanced SSI functionality. Any developer should be able to place and configure SSI fragments with html knowledge. Momos is very easy to extend and is compiled to a single binary. It provides great debugging experience to understand how your page is build which is often difficult in proxys like Nginx or Apache.
+Good point. Nginx is a great proxy and although it already provides robust SSI directives I would like to see a solution which doesn't require a restart or reload of the proxy when parameters has to be changed. The transition between defining SSI fragments and configure them should be smooth for any kind of developer. Momos should provide a high performance proxy with advanced SSI functionality. Any developer should be able to place and configure SSI fragments with html knowledge. Momos is very easy to extend and is compiled to a single binary. It provides great debugging experience to understand how your page is build which is often difficult in proxys like Nginx or Apache.
 
 ## What are SSI?
 
@@ -31,7 +31,7 @@ Good point. Nginx is a great proxy and although it already provides robust SSI d
 - Easy integration of html fragments from external services
 - Share all layout html fragments to keep them [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)
 - Insert fragments in pages which are usually static (e.g landing) 
-- In highly distributed environments it can be an advantage to integrate services on data level
+- In highly distributed environments it can be an advantage to integrate services on data content
 
 
 ## Example
