@@ -114,6 +114,8 @@ Momos is no replacement for a reverse proxy like Nginx or Apache. Only the calls
 - [X] Start multiple requests concurrently with go channels
 - [ ] Collect metrics
 - [X] Write tests
+- [ ] Stream result
+- [ ] Add `headers` attribute
 
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
