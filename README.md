@@ -116,6 +116,7 @@ Momos is no replacement for a reverse proxy like Nginx or Apache. Only the calls
 - [X] Write tests
 - [ ] Stream result
 - [ ] Add `headers` attribute
+- [ ] Pass headers from upstream to fragments
 
 ### References
 - [Microservice-websites](https://gustafnk.github.io/microservice-websites/#integration-techniques)
