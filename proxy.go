@@ -17,10 +17,10 @@ import (
 )
 
 var (
-	ErrRequest            = errors.New("Request error")
-	ErrTimeout            = errors.New("Timeout error")
-	ErrInvalidStatusCode  = errors.New("Invalid status code")
-	ErrInvalidContentType = errors.New("Invalid content type")
+	ErrRequest            = errors.New("request error")
+	ErrTimeout            = errors.New("timeout error")
+	ErrInvalidStatusCode  = errors.New("invalid status code")
+	ErrInvalidContentType = errors.New("invalid content type")
 )
 
 var cache = clientCache.NewMemoryCacheTransport()
@@ -63,24 +63,36 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 	doc.Find("ssi").Each(func(i int, element *goquery.Selection) {
 		se := SSIElement{Element: element}
 
-		se.SetTimeout(element.AttrOr("timeout", "2000"))
-		se.SetSrc(element.AttrOr("src", ""))
-		se.SetName(element.AttrOr("name", nuid.Next()))
-		se.SetTemplate(element.AttrOr("template", "false"))
-		se.SetFilterIncludes(element.AttrOr("no-scripts", "true"))
-
-		se.GetErrorTag()
-		se.GetTimeoutTag()
-
-		se.templateContext = TemplateContext{
-			DateLocal: time.Now().Local().Format("2006-01-02"),
-			Date:      time.Now().Format(time.RFC3339),
-			RequestId: req.Header.Get("X-Request-Id"),
-			Name:      se.name,
+		ssiError := se.SetTimeout(element.AttrOr("timeout", "2000"))
+		if ssiError == nil {
+			ssiError = se.SetSrc(element.AttrOr("src", ""))
 		}
+		if ssiError == nil {
+			ssiError = se.SetName(element.AttrOr("name", nuid.Next()))
+		}
+		if ssiError == nil {
+			ssiError = se.SetTemplate(element.AttrOr("template", "false"))
+		}
+		if ssiError == nil {
+			ssiError = se.SetFilterIncludes(element.AttrOr("no-scripts", "true"))
+		}
+		if ssiError == nil {
+			ssiError = se.GetErrorTag()
+		}
+		if ssiError == nil {
+			ssiError = se.GetTimeoutTag()
+		}
+		if ssiError == nil {
+			se.templateContext = TemplateContext{
+				DateLocal: time.Now().Local().Format("2006-01-02"),
+				Date:      time.Now().Format(time.RFC3339),
+				RequestId: req.Header.Get("X-Request-Id"),
+				Name:      se.name,
+			}
 
-		ssiElements[se.name] = se
-		ssiCount++
+			ssiElements[se.name] = se
+			ssiCount++
+		}
 	})
 
 	ch := make(chan ssiResult)
@@ -96,10 +108,16 @@ func (t *proxyTransport) RoundTrip(req *http.Request) (resp *http.Response, err 
 		el := ssiElements[res.name]
 		if res.error == nil {
 			Log.Tracef("Call fragment %q, url: %v, duration: %v", el.name, el.src, time.Since(timeStartRequest))
-			el.SetupSuccess(res.payload)
+			wireErr := el.SetupSuccess(res.payload)
+			if wireErr != nil {
+				Log.Errorf("Fragment could not be applied, Name: %q, Url: %v\nError: %q", el.name, el.src, wireErr)
+			}
 		} else {
-			el.SetupFallback(res.error)
-			Log.Errorf("Fragment error %q, url: %v\nerror: %q", el.name, el.src, res.error)
+			Log.Errorf("Fragment content could not be fetched, Name: %q, Url: %v\nError: %q", el.name, el.src, res.error)
+			wireErr := el.SetupFallback(res.error)
+			if wireErr != nil {
+				Log.Errorf("Fallback fragment could not be applied, Name: %q, Url: %v\nError: %q", el.name, el.src, wireErr)
+			}
 		}
 	}
 
@@ -143,7 +161,12 @@ func makeRequest(name string, url string, ch chan<- ssiResult, timeout time.Dura
 			ch <- ssiResult{name: name, error: ErrInvalidContentType}
 		} else if resp.StatusCode > 199 && resp.StatusCode < 300 {
 			body, _ := ioutil.ReadAll(resp.Body)
-			defer resp.Body.Close()
+			defer func() {
+				err := resp.Body.Close()
+				if err != nil {
+					Log.Errorf("Response could not be closed! Fragment: %q, Url: %q, Error: %q", name, url, err)
+				}
+			}()
 
 			// https://github.com/gregjones/httpcache
 			if resp.Header.Get("X-From-Cache") == "1" {

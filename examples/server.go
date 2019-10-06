@@ -3,7 +3,12 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"time"
 
 	"github.com/hemerajs/momos"
 )
@@ -22,22 +27,43 @@ func ssiHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	apiAddr := "127.0.0.1:8080"
+	ssiAddr := "127.0.0.1:8081"
+	proxyAddr := "127.0.0.1:9090"
+
 	// Api Mock
 	api := http.NewServeMux()
 	api.HandleFunc("/", backendHandler)
 	go func() {
-		http.ListenAndServe("127.0.0.1:8080", api)
+		http.ListenAndServe(apiAddr, api)
 	}()
 
 	// SSI Mock
 	ssi := http.NewServeMux()
 	ssi.HandleFunc("/", ssiHandler)
 	go func() {
-		http.ListenAndServe("127.0.0.1:8081", ssi)
+		http.ListenAndServe(ssiAddr, ssi)
 	}()
 
-	// create momos instance and pass the url to your service
+	// Pass the url to your api
 	p := momos.New("http://127.0.0.1:8080")
-	// create proxy server
-	p.Start("127.0.0.1:9090")
+
+	// Start server
+	go func() {
+		if err := p.Start(proxyAddr); err != nil {
+			fmt.Printf("shutting down the server, cause: %s", err)
+		}
+	}()
+
+	// Wait for interrupt signal to gracefully shutdown the server with
+	// a timeout of 10 seconds.
+	quit := make(chan os.Signal)
+	signal.Notify(quit, os.Interrupt)
+	<-quit
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	if err := p.Shutdown(ctx); err != nil {
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
+		os.Exit(1)
+	}
 }

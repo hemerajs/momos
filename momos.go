@@ -1,6 +1,7 @@
 package momos
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
@@ -19,7 +20,7 @@ __  ___
 /  |/  /__  __ _  ___  ___
 / /|_/ / _ \/  ' \/ _ \(_-<
 /_/  /_/\___/_/_/_/\___/___/ %s
-High performance, reverse proxy for advanced SSI										
+Reverse proxy for advanced SSI									
 `
 )
 
@@ -48,6 +49,10 @@ func New(targetUrl string) *Proxy {
 	return p
 }
 
+func (p *Proxy) Shutdown(ctx context.Context) error {
+	return p.server.Shutdown(ctx)
+}
+
 func (p *Proxy) Start(addr string) error {
 	// create proxy server
 	server := &http.Server{
@@ -61,6 +66,7 @@ func (p *Proxy) Start(addr string) error {
 	p.server.Handler = p.ReverseProxy
 
 	fmt.Printf(banner, version)
+	fmt.Printf("server started on %s\n", server.Addr)
 
 	// start server
 	return server.ListenAndServe()

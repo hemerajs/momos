@@ -1,14 +1,10 @@
 language: go
 sudo: false
 go:
-- 1.8.3
+  - 1.13.1
 install:
-- go get -t ./...
-- go get -u honnef.co/go/tools/cmd/gosimple
+  - go test -race
+  - go get github.com/kisielk/errcheck
+  - go get honnef.co/go/tools/cmd/staticcheck
 before_script:
-- go fmt ./...
-- go vet ./...
-- gosimple ./...
-script:
-# - go test -i -race ./...
-# - go test -v -race ./...
+  - ./check.sh

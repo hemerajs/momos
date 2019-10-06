@@ -152,14 +152,19 @@ func (s *SSIElement) replaceWithErrorHTML() error {
 		if err == nil {
 			err := s.ReplaceWithHTML(html)
 			if err != nil {
-				s.replaceWithDefaultHTML()
-				return err
+				err := s.replaceWithDefaultHTML()
+				if err != nil {
+					return err
+				}
 			}
 		} else {
 			return err
 		}
 	} else {
-		s.replaceWithDefaultHTML()
+		err := s.replaceWithDefaultHTML()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -201,14 +206,19 @@ func (s *SSIElement) replaceWithTimeoutHTML() error {
 		if err == nil {
 			err := s.ReplaceWithHTML(html)
 			if err != nil {
-				s.replaceWithDefaultHTML()
-				return err
+				err := s.replaceWithDefaultHTML()
+				if err != nil {
+					return err
+				}
 			}
 		} else {
 			return err
 		}
 	} else {
-		s.replaceWithDefaultHTML()
+		err := s.replaceWithDefaultHTML()
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -236,13 +246,13 @@ func (s *SSIElement) SetupFallback(err error) error {
 	switch err {
 	case ErrInvalidContentType:
 	case ErrInvalidStatusCode:
-		s.replaceWithErrorHTML()
+		return s.replaceWithErrorHTML()
 	case ErrRequest:
-		s.replaceWithErrorHTML()
+		return s.replaceWithErrorHTML()
 	case ErrTimeout:
-		s.replaceWithTimeoutHTML()
+		return s.replaceWithTimeoutHTML()
 	default:
-		s.replaceWithDefaultHTML()
+		return s.replaceWithDefaultHTML()
 	}
 
 	return err

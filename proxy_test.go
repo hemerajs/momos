@@ -68,7 +68,7 @@ func setup() {
 		w.Header().Add("Cache-Control", "max-age=10")
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, `
-			<ssi name="basket" timeout="500" template="true" src="`+s.server.URL+`/ssiTimeout">Default content!	
+			<ssi name="basket" timeout="200" template="true" src="`+s.server.URL+`/ssiTimeout">Default content!	
 			<ssi-timeout>
 			<span>Please try it again!</span>
 			</ssi-timeout>
@@ -83,7 +83,7 @@ func setup() {
 		w.Header().Add("Cache-Control", "max-age=10")
 		w.Header().Set("Content-Type", "text/html")
 		fmt.Fprint(w, `
-			<ssi name="basket" timeout="500" template="true" src="`+s.server.URL+`/withIncludes">Default content!	
+			<ssi name="basket" timeout="200" template="true" src="`+s.server.URL+`/withIncludes">Default content!	
 			<ssi-timeout>
 			<span>Please try it again!</span>
 			</ssi-timeout>
@@ -128,8 +128,6 @@ func teardown() {
 	s.server.Close()
 	s.proxy.Close()
 }
-
-var ssiURL string
 
 func TestSSIContent(t *testing.T) {
 	res, err := s.client.Get(s.proxy.URL + "/api")
